@@ -216,25 +216,51 @@ export default function RecipeSearchPage() {
   return (
     <div className="app-container" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
       <div className="hero" style={{ textAlign: 'center', marginBottom: '4rem' }}>
-        <h1 className="hero__title" style={{ fontSize: '4rem' }}>🍽️ Recipe Intelligence</h1>
-        <p className="hero__subtitle" style={{ fontSize: '1.2rem', opacity: 0.8 }}>Deep-dive into recipes, nutrition, and cooking techniques</p>
+        <h1 className="hero__title" style={{ fontSize: '4.5rem', fontWeight: '900' }}>🍽️ Recipe Intelligence</h1>
+        <p className="hero__subtitle" style={{ fontSize: '1.4rem', opacity: 0.8, color: 'var(--text-primary)' }}>Deep-dive into recipes, nutrition, and cooking techniques</p>
       </div>
 
-      <div className="glass-card" style={{ maxWidth: '900px', margin: '0 auto 4rem', padding: '1.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
+      {/* Large Visible Search Bar */}
+      <div className="glass-card" style={{
+        maxWidth: '1000px',
+        margin: '0 auto 5rem',
+        padding: '2rem',
+        boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
+        background: 'rgba(255,255,255,0.95)',
+        border: '1px solid rgba(0,0,0,0.1)'
+      }}>
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem' }}>
           <input
             type="text"
             className="goal-pill"
-            style={{ flex: 1, padding: '1.2rem 2rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)', fontSize: '1.3rem', color: 'white' }}
-            placeholder="Search for a recipe (e.g. Samosa, Lentil Soup)..."
+            style={{
+              flex: 1,
+              padding: '1.5rem 2.5rem',
+              background: '#fff',
+              border: '2px solid var(--accent)',
+              fontSize: '1.5rem',
+              color: '#333',
+              borderRadius: '16px',
+              outline: 'none'
+            }}
+            placeholder="Search recipes (e.g. Samosa, Pasta, Pizza)..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit" className="analyze-btn" style={{ marginTop: 0, width: 'auto', padding: '0 3rem', fontSize: '1.2rem', borderRadius: '50px' }}>
+          <button type="submit" className="analyze-btn" style={{
+            marginTop: 0,
+            width: 'auto',
+            padding: '0 4rem',
+            fontSize: '1.4rem',
+            borderRadius: '16px',
+            backgroundColor: 'var(--accent)',
+            color: 'white'
+          }}>
             🔍 Search
           </button>
         </form>
       </div>
+
 
       {loading && (
         <div style={{ textAlign: 'center', padding: '5rem' }}>

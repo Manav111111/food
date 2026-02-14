@@ -389,12 +389,14 @@ function getSampleRecipes(query) {
       protein: 4.5,
       fat: 13.0,
       ingredients: ['All-purpose flour', 'Boiled potatoes', 'Green peas', 'Garam masala', 'Cumin seeds', 'Oil for frying', 'Salt'],
+      instructions: "1. Prepare the dough with flour, water, and oil.\n2. Boil and mash potatoes, mix with peas and spices.\n3. Wrap the potato mixture in dough triangles.\n4. Deep fry until golden brown.",
       taste: { sweet: 0.1, salt: 0.4, sour: 0.05, bitter: 0.2, umami: 0.5 },
       vegan: true,
       vegetarian: true,
       pescetarian: true,
       source: 'Sample Data (API Rate Limited)',
     },
+
   ];
 
   const queryLower = query.toLowerCase();
@@ -497,12 +499,17 @@ async function getInstructions(recipeId) {
     const data = await response.json();
 
     if (data.success && data.data) {
+      // Normalize to always return an object with instructions field
+      const instructions = typeof data.data === 'string' ? data.data : (data.data.instructions || data.data);
+      const result = { instructions };
+
       // Cache it
-      cache[cacheKey] = { data: data.data, timestamp: Date.now() };
+      cache[cacheKey] = { data: result, timestamp: Date.now() };
 
       console.log(`[RecipeDB] Fetched instructions for recipe ${recipeId}`);
-      return data.data;
+      return result;
     }
+
 
     // Check sample recipes
     const samples = getSampleRecipes('');
