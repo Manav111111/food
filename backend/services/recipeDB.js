@@ -236,22 +236,26 @@ async function searchRecipes(query, page = 1, limit = 50) {
         return {
           id: recipe.Recipe_id || recipe.recipeId || recipe._id || recipe.id,
           title: title,
-          calories: recipe.Calories || recipe['Energy (kcal)'] || 0,
+          calories: recipe.Calories || recipe['Energy (kcal)'] || recipe.Energy || 0,
+          energy_kcal: recipe['Energy (kcal)'] || recipe.Calories || 0,
           servings: recipe.servings || 1,
           totalTime: recipe.total_time || recipe.totalTime || 'N/A',
+          prepTime: recipe.prep_time || recipe.prepTime || 'N/A',
+          cookTime: recipe.cook_time || recipe.cookTime || 'N/A',
           region: recipe.Region || recipe.region,
           cuisine: recipe.Region || recipe.region,
           category: recipe.Sub_region || recipe.category,
-          carbs: recipe['Carbohydrate, by difference (g)'] || 0,
-          protein: recipe['Protein (g)'] || 0,
-          fat: recipe['Total lipid (fat) (g)'] || 0,
-          ingredients: recipe.Ingredients ? recipe.Ingredients.split('||') : [],
+          carbs: recipe['Carbohydrate, by difference (g)'] || recipe.Carbs || 0,
+          protein: recipe['Protein (g)'] || recipe.Protein || 0,
+          fat: recipe['Total lipid (fat) (g)'] || recipe.Fat || 0,
+          ingredients: recipe.Ingredients ? recipe.Ingredients.split('||') : (recipe.ingredients || []),
           utensils: recipe.Utensils ? recipe.Utensils.split('||') : [],
           processes: recipe.Processes ? recipe.Processes.split('||') : [],
           vegan: recipe.vegan === '1.0',
           vegetarian: recipe.lacto_vegetarian === '1.0' || recipe.ovo_vegetarian === '1.0' || recipe.ovo_lacto_vegetarian === '1.0',
-          source: 'RecipeDB API'
+          source: recipe.Source || 'RecipeDB API'
         };
+
 
       });
 
