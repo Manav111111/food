@@ -1,0 +1,379 @@
+{
+  "samosa": {
+    "name": "Samosa",
+    "ingredients": [
+      "potato",
+      "refined flour (maida)",
+      "vegetable oil",
+      "cumin seeds",
+      "green chili",
+      "coriander",
+      "garam masala",
+      "salt",
+      "peas"
+    ],
+    "cooking_method": "deep-fried",
+    "cuisine": "Indian",
+    "category": "snack",
+    "sub_category": "fried snack",
+    "prep_time": 45,
+    "description": "A triangular pastry stuffed with spiced potatoes and peas, deep-fried until golden and crispy."
+  },
+  "pizza": {
+    "name": "Pizza",
+    "ingredients": [
+      "refined flour (maida)",
+      "mozzarella cheese",
+      "tomato sauce",
+      "olive oil",
+      "yeast",
+      "sugar",
+      "salt",
+      "oregano",
+      "basil"
+    ],
+    "cooking_method": "baked",
+    "cuisine": "Italian",
+    "category": "main course",
+    "sub_category": "flatbread",
+    "prep_time": 30,
+    "description": "Flatbread topped with tomato sauce, cheese, and various toppings, baked in an oven."
+  },
+  "burger": {
+    "name": "Burger",
+    "ingredients": [
+      "beef patty",
+      "refined flour bun",
+      "lettuce",
+      "tomato",
+      "onion",
+      "pickles",
+      "ketchup",
+      "mustard",
+      "cheese"
+    ],
+    "cooking_method": "grilled",
+    "cuisine": "American",
+    "category": "main course",
+    "sub_category": "sandwich",
+    "prep_time": 20,
+    "description": "Grilled meat patty served in a bun with fresh vegetables and condiments."
+  },
+  "french fries": {
+    "name": "French Fries",
+    "ingredients": [
+      "potato",
+      "vegetable oil",
+      "salt"
+    ],
+    "cooking_method": "deep-fried",
+    "cuisine": "American",
+    "category": "side dish",
+    "sub_category": "fried snack",
+    "prep_time": 15,
+    "description": "Thinly cut potatoes deep-fried until crispy and golden brown."
+  },
+  "salad": {
+    "name": "Garden Salad",
+    "ingredients": [
+      "lettuce",
+      "cucumber",
+      "tomato",
+      "carrot",
+      "bell pepper",
+      "olive oil",
+      "lemon juice",
+      "salt",
+      "pepper"
+    ],
+    "cooking_method": "raw",
+    "cuisine": "Mediterranean",
+    "category": "appetizer",
+    "sub_category": "salad",
+    "prep_time": 10,
+    "description": "A fresh mix of raw vegetables dressed with olive oil and lemon."
+  },
+  "grilled chicken": {
+    "name": "Grilled Chicken Breast",
+    "ingredients": [
+      "chicken breast",
+      "olive oil",
+      "garlic",
+      "lemon juice",
+      "rosemary",
+      "thyme",
+      "salt",
+      "black pepper"
+    ],
+    "cooking_method": "grilled",
+    "cuisine": "American",
+    "category": "main course",
+    "sub_category": "protein",
+    "prep_time": 25,
+    "description": "Herb-marinated chicken breast grilled to perfection."
+  },
+  "biryani": {
+    "name": "Chicken Biryani",
+    "ingredients": [
+      "basmati rice",
+      "chicken",
+      "onion",
+      "yogurt",
+      "ginger",
+      "garlic",
+      "biryani masala",
+      "saffron",
+      "ghee",
+      "mint",
+      "coriander"
+    ],
+    "cooking_method": "slow-cooked",
+    "cuisine": "Indian",
+    "category": "main course",
+    "sub_category": "rice dish",
+    "prep_time": 60,
+    "description": "Fragrant basmati rice layered with spiced chicken and slow-cooked with aromatic spices."
+  },
+  "dal": {
+    "name": "Dal Tadka",
+    "ingredients": [
+      "toor dal",
+      "onion",
+      "tomato",
+      "garlic",
+      "cumin seeds",
+      "turmeric",
+      "red chili",
+      "ghee",
+      "coriander"
+    ],
+    "cooking_method": "boiled",
+    "cuisine": "Indian",
+    "category": "main course",
+    "sub_category": "lentil dish",
+    "prep_time": 30,
+    "description": "Yellow lentils tempered with spices and ghee."
+  },
+  "idli": {
+    "name": "Idli",
+    "ingredients": [
+      "rice flour",
+      "urad dal",
+      "salt",
+      "water"
+    ],
+    "cooking_method": "steamed",
+    "cuisine": "South Indian",
+    "category": "breakfast",
+    "sub_category": "steamed",
+    "prep_time": 20,
+    "description": "Soft steamed rice and lentil cakes, a healthy South Indian breakfast staple."
+  },
+  "dosa": {
+    "name": "Masala Dosa",
+    "ingredients": [
+      "rice flour",
+      "urad dal",
+      "potato",
+      "onion",
+      "mustard seeds",
+      "curry leaves",
+      "turmeric",
+      "green chili",
+      "oil"
+    ],
+    "cooking_method": "pan-fried",
+    "cuisine": "South Indian",
+    "category": "breakfast",
+    "sub_category": "crepe",
+    "prep_time": 25,
+    "description": "Crispy fermented rice and lentil crepe filled with spiced potato."
+  },
+  "fried rice": {
+    "name": "Vegetable Fried Rice",
+    "ingredients": [
+      "rice",
+      "vegetable oil",
+      "soy sauce",
+      "garlic",
+      "carrot",
+      "peas",
+      "bell pepper",
+      "spring onion",
+      "egg"
+    ],
+    "cooking_method": "stir-fried",
+    "cuisine": "Chinese",
+    "category": "main course",
+    "sub_category": "rice dish",
+    "prep_time": 20,
+    "description": "Rice stir-fried with vegetables and soy sauce in high heat."
+  },
+  "noodles": {
+    "name": "Hakka Noodles",
+    "ingredients": [
+      "refined flour noodles",
+      "vegetable oil",
+      "soy sauce",
+      "garlic",
+      "cabbage",
+      "carrot",
+      "bell pepper",
+      "vinegar",
+      "spring onion"
+    ],
+    "cooking_method": "stir-fried",
+    "cuisine": "Indo-Chinese",
+    "category": "main course",
+    "sub_category": "noodle dish",
+    "prep_time": 20,
+    "description": "Stir-fried refined flour noodles with vegetables and Indo-Chinese sauces."
+  },
+  "pasta": {
+    "name": "Pasta Marinara",
+    "ingredients": [
+      "refined flour pasta",
+      "tomato",
+      "garlic",
+      "olive oil",
+      "basil",
+      "oregano",
+      "parmesan cheese",
+      "salt"
+    ],
+    "cooking_method": "boiled",
+    "cuisine": "Italian",
+    "category": "main course",
+    "sub_category": "pasta",
+    "prep_time": 25,
+    "description": "Boiled pasta tossed in a classic tomato-basil marinara sauce."
+  },
+  "paneer tikka": {
+    "name": "Paneer Tikka",
+    "ingredients": [
+      "paneer",
+      "yogurt",
+      "bell pepper",
+      "onion",
+      "tikka masala",
+      "ginger",
+      "garlic",
+      "lemon juice",
+      "oil"
+    ],
+    "cooking_method": "grilled",
+    "cuisine": "Indian",
+    "category": "appetizer",
+    "sub_category": "grilled",
+    "prep_time": 30,
+    "description": "Marinated paneer cubes grilled with bell peppers and onions."
+  },
+  "tandoori chicken": {
+    "name": "Tandoori Chicken",
+    "ingredients": [
+      "chicken",
+      "yogurt",
+      "tandoori masala",
+      "ginger",
+      "garlic",
+      "lemon juice",
+      "red chili powder",
+      "turmeric",
+      "oil"
+    ],
+    "cooking_method": "roasted",
+    "cuisine": "Indian",
+    "category": "appetizer",
+    "sub_category": "roasted",
+    "prep_time": 40,
+    "description": "Chicken marinated in yogurt and spices, roasted in a tandoor oven."
+  },
+  "ice cream": {
+    "name": "Vanilla Ice Cream",
+    "ingredients": [
+      "milk",
+      "cream",
+      "sugar",
+      "vanilla extract",
+      "egg yolk"
+    ],
+    "cooking_method": "frozen",
+    "cuisine": "American",
+    "category": "dessert",
+    "sub_category": "frozen dessert",
+    "prep_time": 15,
+    "description": "Classic frozen dessert made with cream, sugar, and vanilla."
+  },
+  "cake": {
+    "name": "Chocolate Cake",
+    "ingredients": [
+      "refined flour",
+      "sugar",
+      "cocoa powder",
+      "butter",
+      "eggs",
+      "milk",
+      "baking soda",
+      "vanilla extract"
+    ],
+    "cooking_method": "baked",
+    "cuisine": "American",
+    "category": "dessert",
+    "sub_category": "baked dessert",
+    "prep_time": 50,
+    "description": "Rich and moist chocolate cake made with cocoa and butter."
+  },
+  "oatmeal": {
+    "name": "Oatmeal Bowl",
+    "ingredients": [
+      "rolled oats",
+      "milk",
+      "honey",
+      "banana",
+      "almonds",
+      "cinnamon"
+    ],
+    "cooking_method": "boiled",
+    "cuisine": "American",
+    "category": "breakfast",
+    "sub_category": "porridge",
+    "prep_time": 10,
+    "description": "Warm oatmeal topped with fresh fruits, nuts, and honey."
+  },
+  "smoothie": {
+    "name": "Mixed Berry Smoothie",
+    "ingredients": [
+      "strawberry",
+      "blueberry",
+      "banana",
+      "yogurt",
+      "honey",
+      "milk"
+    ],
+    "cooking_method": "blended",
+    "cuisine": "American",
+    "category": "beverage",
+    "sub_category": "smoothie",
+    "prep_time": 5,
+    "description": "A refreshing blend of mixed berries, banana, and yogurt."
+  },
+  "sushi": {
+    "name": "Salmon Sushi Roll",
+    "ingredients": [
+      "sushi rice",
+      "salmon",
+      "nori seaweed",
+      "rice vinegar",
+      "sugar",
+      "soy sauce",
+      "wasabi",
+      "ginger"
+    ],
+    "cooking_method": "raw",
+    "cuisine": "Japanese",
+    "category": "main course",
+    "sub_category": "sushi",
+    "prep_time": 30,
+    "description": "Vinegared rice rolled with fresh salmon and seaweed."
+  }
+}

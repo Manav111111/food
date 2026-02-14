@@ -1,0 +1,782 @@
+{
+  "samosa": {
+    "similar_foods": [
+      {
+        "name": "Baked Samosa",
+        "similarity": 0.92,
+        "cooking_method": "baked",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Vegetable Cutlet",
+        "similarity": 0.85,
+        "cooking_method": "shallow-fried",
+        "calories": 150,
+        "fried": false
+      },
+      {
+        "name": "Stuffed Whole-Wheat Wrap",
+        "similarity": 0.80,
+        "cooking_method": "grilled",
+        "calories": 160,
+        "fried": false
+      },
+      {
+        "name": "Spring Roll (Baked)",
+        "similarity": 0.78,
+        "cooking_method": "baked",
+        "calories": 140,
+        "fried": false
+      },
+      {
+        "name": "Aloo Tikki",
+        "similarity": 0.75,
+        "cooking_method": "shallow-fried",
+        "calories": 200,
+        "fried": true
+      }
+    ]
+  },
+  "pizza": {
+    "similar_foods": [
+      {
+        "name": "Whole-Wheat Flatbread Pizza",
+        "similarity": 0.90,
+        "cooking_method": "baked",
+        "calories": 210,
+        "fried": false
+      },
+      {
+        "name": "Bruschetta",
+        "similarity": 0.82,
+        "cooking_method": "toasted",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Veggie Quesadilla",
+        "similarity": 0.78,
+        "cooking_method": "grilled",
+        "calories": 230,
+        "fried": false
+      },
+      {
+        "name": "Stuffed Bell Pepper",
+        "similarity": 0.72,
+        "cooking_method": "baked",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Savory Crepe",
+        "similarity": 0.70,
+        "cooking_method": "pan-fried",
+        "calories": 190,
+        "fried": false
+      }
+    ]
+  },
+  "burger": {
+    "similar_foods": [
+      {
+        "name": "Grilled Chicken Sandwich",
+        "similarity": 0.88,
+        "cooking_method": "grilled",
+        "calories": 280,
+        "fried": false
+      },
+      {
+        "name": "Lettuce Wrap Burger",
+        "similarity": 0.85,
+        "cooking_method": "grilled",
+        "calories": 200,
+        "fried": false
+      },
+      {
+        "name": "Turkey Burger",
+        "similarity": 0.83,
+        "cooking_method": "grilled",
+        "calories": 250,
+        "fried": false
+      },
+      {
+        "name": "Veggie Burger",
+        "similarity": 0.80,
+        "cooking_method": "grilled",
+        "calories": 220,
+        "fried": false
+      },
+      {
+        "name": "Chicken Wrap",
+        "similarity": 0.75,
+        "cooking_method": "grilled",
+        "calories": 260,
+        "fried": false
+      }
+    ]
+  },
+  "french fries": {
+    "similar_foods": [
+      {
+        "name": "Baked Sweet Potato Fries",
+        "similarity": 0.90,
+        "cooking_method": "baked",
+        "calories": 150,
+        "fried": false
+      },
+      {
+        "name": "Roasted Potato Wedges",
+        "similarity": 0.87,
+        "cooking_method": "roasted",
+        "calories": 160,
+        "fried": false
+      },
+      {
+        "name": "Air-Fried Zucchini Sticks",
+        "similarity": 0.78,
+        "cooking_method": "air-fried",
+        "calories": 100,
+        "fried": false
+      },
+      {
+        "name": "Baked Veggie Chips",
+        "similarity": 0.72,
+        "cooking_method": "baked",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Mashed Potatoes",
+        "similarity": 0.68,
+        "cooking_method": "boiled",
+        "calories": 180,
+        "fried": false
+      }
+    ]
+  },
+  "salad": {
+    "similar_foods": [
+      {
+        "name": "Quinoa Salad",
+        "similarity": 0.93,
+        "cooking_method": "raw",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Greek Salad",
+        "similarity": 0.91,
+        "cooking_method": "raw",
+        "calories": 95,
+        "fried": false
+      },
+      {
+        "name": "Fruit Bowl",
+        "similarity": 0.80,
+        "cooking_method": "raw",
+        "calories": 80,
+        "fried": false
+      },
+      {
+        "name": "Coleslaw",
+        "similarity": 0.75,
+        "cooking_method": "raw",
+        "calories": 110,
+        "fried": false
+      },
+      {
+        "name": "Sprout Salad",
+        "similarity": 0.85,
+        "cooking_method": "raw",
+        "calories": 70,
+        "fried": false
+      }
+    ]
+  },
+  "grilled chicken": {
+    "similar_foods": [
+      {
+        "name": "Baked Chicken Breast",
+        "similarity": 0.95,
+        "cooking_method": "baked",
+        "calories": 155,
+        "fried": false
+      },
+      {
+        "name": "Steamed Fish Fillet",
+        "similarity": 0.82,
+        "cooking_method": "steamed",
+        "calories": 130,
+        "fried": false
+      },
+      {
+        "name": "Turkey Breast",
+        "similarity": 0.88,
+        "cooking_method": "roasted",
+        "calories": 145,
+        "fried": false
+      },
+      {
+        "name": "Tofu Steak",
+        "similarity": 0.72,
+        "cooking_method": "grilled",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Tandoori Chicken",
+        "similarity": 0.90,
+        "cooking_method": "roasted",
+        "calories": 195,
+        "fried": false
+      }
+    ]
+  },
+  "biryani": {
+    "similar_foods": [
+      {
+        "name": "Brown Rice Pulao",
+        "similarity": 0.88,
+        "cooking_method": "steamed",
+        "calories": 200,
+        "fried": false
+      },
+      {
+        "name": "Quinoa Pilaf",
+        "similarity": 0.80,
+        "cooking_method": "steamed",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Lemon Rice",
+        "similarity": 0.78,
+        "cooking_method": "steamed",
+        "calories": 195,
+        "fried": false
+      },
+      {
+        "name": "Khichdi",
+        "similarity": 0.85,
+        "cooking_method": "boiled",
+        "calories": 170,
+        "fried": false
+      },
+      {
+        "name": "Vegetable Pulao",
+        "similarity": 0.83,
+        "cooking_method": "steamed",
+        "calories": 190,
+        "fried": false
+      }
+    ]
+  },
+  "dal": {
+    "similar_foods": [
+      {
+        "name": "Moong Dal Soup",
+        "similarity": 0.92,
+        "cooking_method": "boiled",
+        "calories": 90,
+        "fried": false
+      },
+      {
+        "name": "Lentil Salad",
+        "similarity": 0.85,
+        "cooking_method": "boiled",
+        "calories": 110,
+        "fried": false
+      },
+      {
+        "name": "Hummus",
+        "similarity": 0.78,
+        "cooking_method": "blended",
+        "calories": 130,
+        "fried": false
+      },
+      {
+        "name": "Chickpea Curry",
+        "similarity": 0.82,
+        "cooking_method": "boiled",
+        "calories": 150,
+        "fried": false
+      },
+      {
+        "name": "Rasam",
+        "similarity": 0.88,
+        "cooking_method": "boiled",
+        "calories": 60,
+        "fried": false
+      }
+    ]
+  },
+  "idli": {
+    "similar_foods": [
+      {
+        "name": "Oats Idli",
+        "similarity": 0.93,
+        "cooking_method": "steamed",
+        "calories": 45,
+        "fried": false
+      },
+      {
+        "name": "Ragi Idli",
+        "similarity": 0.90,
+        "cooking_method": "steamed",
+        "calories": 42,
+        "fried": false
+      },
+      {
+        "name": "Dhokla",
+        "similarity": 0.85,
+        "cooking_method": "steamed",
+        "calories": 50,
+        "fried": false
+      },
+      {
+        "name": "Steamed Rice Cake",
+        "similarity": 0.80,
+        "cooking_method": "steamed",
+        "calories": 55,
+        "fried": false
+      },
+      {
+        "name": "Appam",
+        "similarity": 0.75,
+        "cooking_method": "steamed",
+        "calories": 60,
+        "fried": false
+      }
+    ]
+  },
+  "dosa": {
+    "similar_foods": [
+      {
+        "name": "Ragi Dosa",
+        "similarity": 0.92,
+        "cooking_method": "pan-fried",
+        "calories": 130,
+        "fried": false
+      },
+      {
+        "name": "Oats Dosa",
+        "similarity": 0.88,
+        "cooking_method": "pan-fried",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Pesarattu",
+        "similarity": 0.85,
+        "cooking_method": "pan-fried",
+        "calories": 110,
+        "fried": false
+      },
+      {
+        "name": "Uttapam",
+        "similarity": 0.82,
+        "cooking_method": "pan-fried",
+        "calories": 140,
+        "fried": false
+      },
+      {
+        "name": "Savory Crepe",
+        "similarity": 0.75,
+        "cooking_method": "pan-fried",
+        "calories": 150,
+        "fried": false
+      }
+    ]
+  },
+  "fried rice": {
+    "similar_foods": [
+      {
+        "name": "Steamed Vegetable Rice",
+        "similarity": 0.88,
+        "cooking_method": "steamed",
+        "calories": 170,
+        "fried": false
+      },
+      {
+        "name": "Brown Rice Bowl",
+        "similarity": 0.82,
+        "cooking_method": "steamed",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Cauliflower Rice Stir-Fry",
+        "similarity": 0.80,
+        "cooking_method": "stir-fried",
+        "calories": 100,
+        "fried": false
+      },
+      {
+        "name": "Quinoa Fried Rice",
+        "similarity": 0.85,
+        "cooking_method": "stir-fried",
+        "calories": 190,
+        "fried": false
+      },
+      {
+        "name": "Lemon Rice",
+        "similarity": 0.76,
+        "cooking_method": "steamed",
+        "calories": 195,
+        "fried": false
+      }
+    ]
+  },
+  "noodles": {
+    "similar_foods": [
+      {
+        "name": "Whole-Wheat Noodles",
+        "similarity": 0.90,
+        "cooking_method": "boiled",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Zucchini Noodles",
+        "similarity": 0.82,
+        "cooking_method": "sautéed",
+        "calories": 60,
+        "fried": false
+      },
+      {
+        "name": "Rice Noodle Soup",
+        "similarity": 0.78,
+        "cooking_method": "boiled",
+        "calories": 150,
+        "fried": false
+      },
+      {
+        "name": "Soba Noodles",
+        "similarity": 0.85,
+        "cooking_method": "boiled",
+        "calories": 170,
+        "fried": false
+      },
+      {
+        "name": "Glass Noodle Salad",
+        "similarity": 0.72,
+        "cooking_method": "boiled",
+        "calories": 130,
+        "fried": false
+      }
+    ]
+  },
+  "pasta": {
+    "similar_foods": [
+      {
+        "name": "Whole-Wheat Pasta",
+        "similarity": 0.92,
+        "cooking_method": "boiled",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Zucchini Pasta",
+        "similarity": 0.80,
+        "cooking_method": "sautéed",
+        "calories": 80,
+        "fried": false
+      },
+      {
+        "name": "Chickpea Pasta",
+        "similarity": 0.85,
+        "cooking_method": "boiled",
+        "calories": 190,
+        "fried": false
+      },
+      {
+        "name": "Quinoa Pasta",
+        "similarity": 0.83,
+        "cooking_method": "boiled",
+        "calories": 175,
+        "fried": false
+      },
+      {
+        "name": "Cauliflower Gnocchi",
+        "similarity": 0.75,
+        "cooking_method": "baked",
+        "calories": 140,
+        "fried": false
+      }
+    ]
+  },
+  "paneer tikka": {
+    "similar_foods": [
+      {
+        "name": "Grilled Tofu Tikka",
+        "similarity": 0.90,
+        "cooking_method": "grilled",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Mushroom Tikka",
+        "similarity": 0.88,
+        "cooking_method": "grilled",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Grilled Halloumi",
+        "similarity": 0.82,
+        "cooking_method": "grilled",
+        "calories": 200,
+        "fried": false
+      },
+      {
+        "name": "Soya Tikka",
+        "similarity": 0.85,
+        "cooking_method": "grilled",
+        "calories": 150,
+        "fried": false
+      },
+      {
+        "name": "Grilled Vegetables",
+        "similarity": 0.78,
+        "cooking_method": "grilled",
+        "calories": 80,
+        "fried": false
+      }
+    ]
+  },
+  "tandoori chicken": {
+    "similar_foods": [
+      {
+        "name": "Grilled Chicken Breast",
+        "similarity": 0.93,
+        "cooking_method": "grilled",
+        "calories": 165,
+        "fried": false
+      },
+      {
+        "name": "Baked Herb Chicken",
+        "similarity": 0.88,
+        "cooking_method": "baked",
+        "calories": 175,
+        "fried": false
+      },
+      {
+        "name": "Chicken Tikka",
+        "similarity": 0.92,
+        "cooking_method": "grilled",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Steamed Chicken",
+        "similarity": 0.80,
+        "cooking_method": "steamed",
+        "calories": 140,
+        "fried": false
+      },
+      {
+        "name": "Grilled Fish",
+        "similarity": 0.78,
+        "cooking_method": "grilled",
+        "calories": 150,
+        "fried": false
+      }
+    ]
+  },
+  "ice cream": {
+    "similar_foods": [
+      {
+        "name": "Frozen Yogurt",
+        "similarity": 0.90,
+        "cooking_method": "frozen",
+        "calories": 130,
+        "fried": false
+      },
+      {
+        "name": "Banana Nice Cream",
+        "similarity": 0.85,
+        "cooking_method": "frozen",
+        "calories": 90,
+        "fried": false
+      },
+      {
+        "name": "Sorbet",
+        "similarity": 0.82,
+        "cooking_method": "frozen",
+        "calories": 100,
+        "fried": false
+      },
+      {
+        "name": "Chia Pudding",
+        "similarity": 0.72,
+        "cooking_method": "chilled",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Yogurt Parfait",
+        "similarity": 0.70,
+        "cooking_method": "chilled",
+        "calories": 150,
+        "fried": false
+      }
+    ]
+  },
+  "cake": {
+    "similar_foods": [
+      {
+        "name": "Oat Flour Cake",
+        "similarity": 0.88,
+        "cooking_method": "baked",
+        "calories": 220,
+        "fried": false
+      },
+      {
+        "name": "Banana Bread",
+        "similarity": 0.82,
+        "cooking_method": "baked",
+        "calories": 200,
+        "fried": false
+      },
+      {
+        "name": "Date Energy Balls",
+        "similarity": 0.75,
+        "cooking_method": "raw",
+        "calories": 150,
+        "fried": false
+      },
+      {
+        "name": "Yogurt Cake",
+        "similarity": 0.80,
+        "cooking_method": "baked",
+        "calories": 240,
+        "fried": false
+      },
+      {
+        "name": "Dark Chocolate Mousse",
+        "similarity": 0.78,
+        "cooking_method": "chilled",
+        "calories": 180,
+        "fried": false
+      }
+    ]
+  },
+  "oatmeal": {
+    "similar_foods": [
+      {
+        "name": "Overnight Oats",
+        "similarity": 0.95,
+        "cooking_method": "chilled",
+        "calories": 160,
+        "fried": false
+      },
+      {
+        "name": "Quinoa Porridge",
+        "similarity": 0.88,
+        "cooking_method": "boiled",
+        "calories": 145,
+        "fried": false
+      },
+      {
+        "name": "Muesli Bowl",
+        "similarity": 0.85,
+        "cooking_method": "raw",
+        "calories": 170,
+        "fried": false
+      },
+      {
+        "name": "Chia Seed Pudding",
+        "similarity": 0.80,
+        "cooking_method": "chilled",
+        "calories": 130,
+        "fried": false
+      },
+      {
+        "name": "Smoothie Bowl",
+        "similarity": 0.75,
+        "cooking_method": "blended",
+        "calories": 180,
+        "fried": false
+      }
+    ]
+  },
+  "smoothie": {
+    "similar_foods": [
+      {
+        "name": "Green Smoothie",
+        "similarity": 0.92,
+        "cooking_method": "blended",
+        "calories": 100,
+        "fried": false
+      },
+      {
+        "name": "Protein Shake",
+        "similarity": 0.85,
+        "cooking_method": "blended",
+        "calories": 180,
+        "fried": false
+      },
+      {
+        "name": "Coconut Water",
+        "similarity": 0.72,
+        "cooking_method": "raw",
+        "calories": 45,
+        "fried": false
+      },
+      {
+        "name": "Fresh Fruit Juice",
+        "similarity": 0.80,
+        "cooking_method": "blended",
+        "calories": 110,
+        "fried": false
+      },
+      {
+        "name": "Lassi",
+        "similarity": 0.78,
+        "cooking_method": "blended",
+        "calories": 120,
+        "fried": false
+      }
+    ]
+  },
+  "sushi": {
+    "similar_foods": [
+      {
+        "name": "Brown Rice Sushi",
+        "similarity": 0.93,
+        "cooking_method": "raw",
+        "calories": 170,
+        "fried": false
+      },
+      {
+        "name": "Sashimi",
+        "similarity": 0.88,
+        "cooking_method": "raw",
+        "calories": 120,
+        "fried": false
+      },
+      {
+        "name": "Poke Bowl",
+        "similarity": 0.85,
+        "cooking_method": "raw",
+        "calories": 190,
+        "fried": false
+      },
+      {
+        "name": "Rice Paper Rolls",
+        "similarity": 0.82,
+        "cooking_method": "raw",
+        "calories": 110,
+        "fried": false
+      },
+      {
+        "name": "Edamame Bowl",
+        "similarity": 0.75,
+        "cooking_method": "steamed",
+        "calories": 130,
+        "fried": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "samosa": {
+    "calories": 308,
+    "carbs": 32,
+    "fat": 17,
+    "protein": 5,
+    "fiber": 2,
+    "sugar": 3,
+    "sodium": 410,
+    "fried": true,
+    "refined": true
+  },
+  "pizza": {
+    "calories": 285,
+    "carbs": 36,
+    "fat": 10,
+    "protein": 12,
+    "fiber": 2,
+    "sugar": 4,
+    "sodium": 640,
+    "fried": false,
+    "refined": true
+  },
+  "burger": {
+    "calories": 354,
+    "carbs": 29,
+    "fat": 17,
+    "protein": 20,
+    "fiber": 1,
+    "sugar": 6,
+    "sodium": 497,
+    "fried": false,
+    "refined": true
+  },
+  "french fries": {
+    "calories": 365,
+    "carbs": 44,
+    "fat": 17,
+    "protein": 4,
+    "fiber": 4,
+    "sugar": 0,
+    "sodium": 246,
+    "fried": true,
+    "refined": false
+  },
+  "salad": {
+    "calories": 65,
+    "carbs": 7,
+    "fat": 3,
+    "protein": 3,
+    "fiber": 3,
+    "sugar": 4,
+    "sodium": 120,
+    "fried": false,
+    "refined": false
+  },
+  "grilled chicken": {
+    "calories": 165,
+    "carbs": 0,
+    "fat": 3.6,
+    "protein": 31,
+    "fiber": 0,
+    "sugar": 0,
+    "sodium": 74,
+    "fried": false,
+    "refined": false
+  },
+  "biryani": {
+    "calories": 292,
+    "carbs": 38,
+    "fat": 10,
+    "protein": 14,
+    "fiber": 1,
+    "sugar": 2,
+    "sodium": 520,
+    "fried": false,
+    "refined": false
+  },
+  "dal": {
+    "calories": 120,
+    "carbs": 20,
+    "fat": 1.5,
+    "protein": 8,
+    "fiber": 5,
+    "sugar": 2,
+    "sodium": 300,
+    "fried": false,
+    "refined": false
+  },
+  "idli": {
+    "calories": 39,
+    "carbs": 8,
+    "fat": 0.2,
+    "protein": 1.5,
+    "fiber": 0.5,
+    "sugar": 0,
+    "sodium": 65,
+    "fried": false,
+    "refined": false
+  },
+  "dosa": {
+    "calories": 168,
+    "carbs": 28,
+    "fat": 4,
+    "protein": 4,
+    "fiber": 1,
+    "sugar": 2,
+    "sodium": 180,
+    "fried": false,
+    "refined": false
+  },
+  "fried rice": {
+    "calories": 238,
+    "carbs": 34,
+    "fat": 8,
+    "protein": 6,
+    "fiber": 1,
+    "sugar": 2,
+    "sodium": 560,
+    "fried": true,
+    "refined": false
+  },
+  "noodles": {
+    "calories": 220,
+    "carbs": 35,
+    "fat": 6,
+    "protein": 5,
+    "fiber": 1,
+    "sugar": 3,
+    "sodium": 480,
+    "fried": false,
+    "refined": true
+  },
+  "pasta": {
+    "calories": 220,
+    "carbs": 43,
+    "fat": 1.3,
+    "protein": 8,
+    "fiber": 2.5,
+    "sugar": 1,
+    "sodium": 3,
+    "fried": false,
+    "refined": true
+  },
+  "paneer tikka": {
+    "calories": 260,
+    "carbs": 8,
+    "fat": 18,
+    "protein": 16,
+    "fiber": 1,
+    "sugar": 3,
+    "sodium": 320,
+    "fried": false,
+    "refined": false
+  },
+  "tandoori chicken": {
+    "calories": 195,
+    "carbs": 5,
+    "fat": 8,
+    "protein": 26,
+    "fiber": 1,
+    "sugar": 2,
+    "sodium": 440,
+    "fried": false,
+    "refined": false
+  },
+  "ice cream": {
+    "calories": 207,
+    "carbs": 24,
+    "fat": 11,
+    "protein": 4,
+    "fiber": 0,
+    "sugar": 21,
+    "sodium": 80,
+    "fried": false,
+    "refined": true
+  },
+  "cake": {
+    "calories": 350,
+    "carbs": 50,
+    "fat": 14,
+    "protein": 5,
+    "fiber": 1,
+    "sugar": 30,
+    "sodium": 300,
+    "fried": false,
+    "refined": true
+  },
+  "oatmeal": {
+    "calories": 150,
+    "carbs": 27,
+    "fat": 3,
+    "protein": 5,
+    "fiber": 4,
+    "sugar": 1,
+    "sodium": 5,
+    "fried": false,
+    "refined": false
+  },
+  "smoothie": {
+    "calories": 135,
+    "carbs": 33,
+    "fat": 0.5,
+    "protein": 2,
+    "fiber": 3,
+    "sugar": 24,
+    "sodium": 15,
+    "fried": false,
+    "refined": false
+  },
+  "sushi": {
+    "calories": 200,
+    "carbs": 38,
+    "fat": 1,
+    "protein": 9,
+    "fiber": 1,
+    "sugar": 8,
+    "sodium": 500,
+    "fried": false,
+    "refined": true
+  }
+}
