@@ -130,7 +130,15 @@ function DetailedRecipeCard({ recipe, selectedGoal }) {
 
       {/* PRECISION HEALTH ASSESSMENT */}
       {details.precisionHealth && (
-        <div style={{ padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '24px', marginBottom: '3rem', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)' }}>
+        <div style={{
+          padding: '2.5rem',
+          background: '#FFFFFF', // Pure white
+          borderRadius: '24px',
+          marginBottom: '3rem',
+          border: '1px solid rgba(0,0,0,0.1)',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.05)',
+          color: '#000'
+        }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{
@@ -144,26 +152,26 @@ function DetailedRecipeCard({ recipe, selectedGoal }) {
               }}>
                 {details.precisionHealth.category.toUpperCase()}
               </div>
-              <div style={{ fontSize: '1.4rem', fontWeight: '800' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: '900', color: '#000' }}>
                 Health Score: <span style={{ color: details.precisionHealth.color }}>{details.precisionHealth.healthScore}</span>
               </div>
             </div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.5, fontWeight: '800', letterSpacing: '3px' }}>PRECISION ANALYTICS</div>
+            <div style={{ fontSize: '0.75rem', color: '#000', opacity: 0.8, fontWeight: '900', letterSpacing: '3px' }}>PRECISION ANALYTICS</div>
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
             {details.precisionHealth.benefits.map((b, i) => (
-              <span key={i} className="nut-badge" style={{ background: 'rgba(46, 204, 113, 0.1)', color: '#2ecc71', border: '1px solid rgba(46, 204, 113, 0.2)', padding: '0.6rem 1.2rem', fontSize: '1rem' }}>
+              <span key={i} className="nut-badge" style={{ background: 'rgba(46, 204, 113, 0.1)', color: '#27ae60', border: '2px solid rgba(46, 204, 113, 0.2)', padding: '0.6rem 1.2rem', fontSize: '1rem', fontWeight: '800' }}>
                 ✨ {b}
               </span>
             ))}
             {details.precisionHealth.riskFactors.map((r, i) => (
-              <span key={i} className="nut-badge" style={{ background: 'rgba(231, 76, 60, 0.1)', color: '#e74c3c', border: '1px solid rgba(231, 76, 60, 0.2)', padding: '0.6rem 1.2rem', fontSize: '1rem' }}>
+              <span key={i} className="nut-badge" style={{ background: 'rgba(231, 76, 60, 0.1)', color: '#c0392b', border: '2px solid rgba(231, 76, 60, 0.2)', padding: '0.6rem 1.2rem', fontSize: '1rem', fontWeight: '800' }}>
                 ⚠️ {r}
               </span>
             ))}
             {details.precisionHealth.benefits.length === 0 && details.precisionHealth.riskFactors.length === 0 && (
-              <span style={{ opacity: 0.5, fontStyle: 'italic' }}>Balanced nutritional profile detected.</span>
+              <span style={{ opacity: 0.6, fontStyle: 'italic', color: '#000' }}>Balanced nutritional profile detected.</span>
             )}
           </div>
         </div>
@@ -172,41 +180,50 @@ function DetailedRecipeCard({ recipe, selectedGoal }) {
       {/* HEALTH ASSESSMENT (MATCHING SCREENSHOT) */}
       {healthIntel && (
         <div className="health-dashboard-section" style={{ marginBottom: '3rem' }}>
-          <div className="glass-card health-assessment-card" style={{
+          <div className="health-assessment-card" style={{
             textAlign: 'center',
-            padding: '3rem',
-            background: 'rgba(255,255,255,0.03)',
-            backdropFilter: 'blur(20px)',
+            padding: '4rem 3rem 3rem',
+            background: '#FFFFFF', // Pure white
             borderRadius: '24px',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            border: '1px solid rgba(0,0,0,0.1)',
+            boxShadow: '0 25px 50px rgba(0,0,0,0.06)'
           }}>
-            <div style={{ position: 'absolute', top: '1.5rem', left: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.2rem', fontWeight: '700' }}>
-              <span style={{ color: 'var(--danger)' }}>❤️</span> Health Assessment
+            <div style={{
+              position: 'absolute',
+              top: '1.5rem',
+              left: '2rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontSize: '1.4rem',
+              fontWeight: '900',
+              color: '#000' // Prominent black headline
+            }}>
+              <span style={{ color: '#ff4757' }}>❤️</span> Health Assessment
             </div>
 
             <div style={{ margin: '2rem auto' }}>
               <HealthAssessment score={healthIntel.suitability} suitability={healthIntel.suitability} />
             </div>
-
-            <div className={`suitability-badge suitability-badge--${healthIntel.suitability.suitable ? 'suitable' : 'not-suitable'}`} style={{ margin: '0 auto', display: 'inline-flex' }}>
-              {healthIntel.suitability.suitable ? '✓ Suitable' : '✗ Not Suitable'}
-            </div>
           </div>
 
           {/* HEALTHIER ALTERNATIVES (MATCHING SCREENSHOT) */}
           {healthIntel.alternatives && healthIntel.alternatives.length > 0 && (
-            <div className="glass-card health-alternatives-card" style={{
+            <div className="health-alternatives-card" style={{
               marginTop: '2rem',
-              padding: '2rem',
-              background: 'rgba(255,255,255,0.02)',
-              borderRadius: '24px'
+              padding: '2.5rem',
+              background: '#FFFFFF', // Pure white
+              borderRadius: '24px',
+              border: '1px solid rgba(0,0,0,0.1)',
+              boxShadow: '0 15px 30px rgba(0,0,0,0.04)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: '700' }}>
-                  <span style={{ color: 'var(--accent)' }}>🔄</span> Healthier Alternatives
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.3rem', fontWeight: '900', color: '#000' }}>
+                  <span style={{ color: '#3498db' }}>🔄</span> Healthier Alternatives
                 </div>
-                <span style={{ fontSize: '0.7rem', opacity: 0.6, fontWeight: '800', letterSpacing: '2px' }}>FLAVORDB</span>
+                <span style={{ fontSize: '0.75rem', color: '#000', opacity: 0.8, fontWeight: '900', letterSpacing: '2px' }}>FLAVORDB</span>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -216,26 +233,28 @@ function DetailedRecipeCard({ recipe, selectedGoal }) {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '1.5rem',
-                    background: 'rgba(255,255,255,0.05)',
+                    background: 'rgba(0,0,0,0.02)',
                     borderRadius: '16px',
-                    border: '1px solid rgba(255,255,255,0.05)'
+                    border: '1px solid rgba(0,0,0,0.05)'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                      <span style={{ fontSize: '1.5rem', fontWeight: '900', color: 'var(--danger)', opacity: 0.6 }}>#{idx + 1}</span>
+                      <span style={{ fontSize: '1.6rem', fontWeight: '950', color: '#ff4757', opacity: 0.8 }}>#{idx + 1}</span>
                       <div>
-                        <div style={{ fontSize: '1.2rem', fontWeight: '700' }}>{alt.name}</div>
-                        <div style={{ fontSize: '0.85rem', opacity: 0.6, marginTop: '0.3rem' }}>🔍 {alt.cooking_method}</div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: '800', color: '#000' }}>{alt.name}</div>
+                        <div style={{ fontSize: '0.9rem', color: '#000', opacity: 0.6, marginTop: '0.3rem', fontWeight: '600' }}>🔍 {alt.cooking_method}</div>
                       </div>
                     </div>
                     <div className="match-badge" style={{
-                      padding: '0.5rem 1rem',
-                      borderRadius: '8px',
-                      background: 'rgba(78, 205, 196, 0.1)',
-                      color: 'var(--success)',
-                      fontSize: '0.85rem',
-                      fontWeight: '800'
+                      padding: '0.6rem 1.2rem',
+                      borderRadius: '10px',
+                      background: 'rgba(46, 204, 113, 0.1)',
+                      color: '#27ae60',
+                      fontSize: '0.9rem',
+                      fontWeight: '900',
+                      border: '1px solid rgba(46, 204, 113, 0.2)'
                     }}>
-                      {(alt.similarity * 1).toFixed(2)}% match
+                      {/* Removed duplicated/extra match calculations as requested */}
+                      {Math.round(alt.similarity)} match
                     </div>
                   </div>
                 ))}
