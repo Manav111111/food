@@ -4,6 +4,8 @@ const RecipeDBService = require('../services/recipeDB');
 const FlavorDBService = require('../services/flavorDB');
 const FoodDetector = require('../services/foodDetector');
 const ClarifaiService = require('../services/clarifai');
+const NutritionEngine = require('../services/nutritionEngine');
+
 
 /**
  * Helper: Calculate health score from nutrition data
@@ -234,17 +236,11 @@ router.get('/recipes/:id/nutrition', async (req, res) => {
 
     const nutrition = await RecipeDBService.getDetailedNutrition(id);
 
-    if (!nutrition) {
-      return res.status(404).json({
-        error: 'Nutrition data not found',
-        message: `No nutrition data available for recipe ${id}`
-      });
-    }
-
     res.json({
-      success: true,
+      success: !!nutrition,
       recipeId: id,
-      nutrition,
+      nutrition: nutrition || null,
+      message: nutrition ? undefined : `No nutrition data available for recipe ${id}`,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -268,17 +264,11 @@ router.get('/recipes/:id/instructions', async (req, res) => {
 
     const instructions = await RecipeDBService.getInstructions(id);
 
-    if (!instructions) {
-      return res.status(404).json({
-        error: 'Instructions not found',
-        message: `No instructions available for recipe ${id}`
-      });
-    }
-
     res.json({
-      success: true,
+      success: !!instructions,
       recipeId: id,
-      instructions,
+      instructions: instructions || null,
+      message: instructions ? undefined : `No instructions available for recipe ${id}`,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -298,8 +288,7 @@ router.get('/recipes/:id/taste', async (req, res) => {
   try {
     const { id } = req.params;
     const taste = await RecipeDBService.getTasteProfile(id);
-    if (!taste) return res.status(404).json({ error: 'Taste profile not found' });
-    res.json({ success: true, recipeId: id, taste });
+    res.json({ success: !!taste, recipeId: id, taste: taste || null });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch taste profile', message: error.message });
   }
@@ -313,8 +302,7 @@ router.get('/recipes/:id/flavor', async (req, res) => {
   try {
     const { id } = req.params;
     const flavor = await RecipeDBService.getFlavorProfile(id);
-    if (!flavor) return res.status(404).json({ error: 'Flavor profile not found' });
-    res.json({ success: true, recipeId: id, flavor });
+    res.json({ success: !!flavor, recipeId: id, flavor: flavor || null });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch flavor profile', message: error.message });
   }
@@ -365,6 +353,124 @@ router.get('/recipes/method/:method', async (req, res) => {
     res.json({ success: true, recipes });
   } catch (e) {
     res.status(500).json({ error: e.message });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/health-intel
+ * Get health assessment and alternatives for a recipe
+ */
+/**
+ * GET /api/recipes/:id/precision-health
+ * Calculate health score based on user-provided formula from Foodoscope data
+ */
+router.get('/recipes/:id/precision-health', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Fetch exhaustive nutrition data
+    const nutriData = await RecipeDBService.getDetailedNutrition(id);
+
+    // Get basic recipe for servings count
+    const recipes = await RecipeDBService.searchRecipes(''); // Search logic might need specific ID lookup if service supported it, but we'll try to find it in detailed data
+    // Actually, getDetailedNutrition usually contains the data we need.
+
+    if (!nutriData) {
+      return res.json({ success: false, message: 'Nutrition data unavailable for scoring' });
+    }
+
+    // 2. Extract fields (handling potential key variations)
+    const servings = parseFloat(nutriData.servings || nutriData.Servings || 1);
+    const calories = parseFloat(nutriData['Energy (kcal)'] || nutriData.Calories || 0);
+    const sugar = parseFloat(nutriData['Sugars, total (g)'] || nutriData.Sugar || 0);
+    const satFat = parseFloat(nutriData['Fatty acids, total saturated (g)'] || nutriData['Saturated Fat'] || 0);
+    const sodium = parseFloat(nutriData['Sodium, Na (mg)'] || nutriData.Sodium || 0);
+    const fiber = parseFloat(nutriData['Fiber, total dietary (g)'] || nutriData.Fiber || 0);
+    const protein = parseFloat(nutriData['Protein (g)'] || nutriData.Protein || 0);
+
+    // 3. Step 1: Convert to per serving
+    const pCalories = calories / servings;
+    const pSugar = sugar / servings;
+    const pSatFat = satFat / servings;
+    const pSodium = sodium / servings;
+    const pFiber = fiber / servings;
+    const pProtein = protein / servings;
+
+    // 4. Step 2: Calculate Health Score using User Formula
+    // HealthScore = (Fiber * 4 + Protein * 3) - (Sugar * 3 + SaturatedFat * 4 + Sodium/200 + Calories/100)
+    const healthScore = (pFiber * 4 + pProtein * 3) - (pSugar * 3 + pSatFat * 4 + pSodium / 200 + pCalories / 100);
+
+    // 5. Step 3: Classify result
+    let category = "Unhealthy";
+    let color = "#e74c3c"; // Red
+    if (healthScore > 15) {
+      category = "Very Healthy";
+      color = "#2ecc71"; // Green
+    } else if (healthScore >= 5) {
+      category = "Moderate";
+      color = "#f1c40f"; // Yellow
+    } else if (healthScore >= 0) {
+      category = "Less Healthy";
+      color = "#e67e22"; // Orange
+    }
+
+    // 6. Identify Benefits and Risks
+    const benefits = [];
+    if (pFiber > 3) benefits.push("High Fiber");
+    if (pProtein > 10) benefits.push("High Protein");
+
+    const riskFactors = [];
+    if (pSugar > 5) riskFactors.push("High Sugar (Diabetes Risk)");
+    if (pSodium > 400) riskFactors.push("High Sodium (BP Risk)");
+    if (pSatFat > 3) riskFactors.push("High Saturated Fat (Heart Risk)");
+
+    res.json({
+      success: true,
+      healthScore: Math.round(healthScore * 10) / 10,
+      category,
+      color,
+      benefits,
+      riskFactors,
+      perServing: {
+        calories: Math.round(pCalories),
+        sugar: Math.round(pSugar * 10) / 10,
+        fiber: Math.round(pFiber * 10) / 10,
+        protein: Math.round(pProtein * 10) / 10
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/recipes/:id/health-intel', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title } = req.query;
+
+    if (!title) return res.status(400).json({ error: 'Title is required' });
+
+    // 1. Check if we have specific data in NutritionEngine for this title
+    const analysis = NutritionEngine.fullAnalysis(title, 'balanced_diet');
+
+    if (!analysis.nutrition) {
+      // If no data in JSON, return success: false so UI hides it
+      return res.json({ success: false, message: 'No health data available' });
+    }
+
+    // 2. Get alternatives from FlavorDB
+    const isFried = title.toLowerCase().includes('fry') || title.toLowerCase().includes('fried');
+    const alternatives = FlavorDBService.getHealthierAlternatives(title, isFried, 3);
+
+    res.json({
+      success: true,
+      healthScore: analysis.healthScore,
+      suitability: analysis.suitability,
+      nutrition: analysis.nutrition,
+      alternatives: alternatives.length > 0 ? alternatives : null
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

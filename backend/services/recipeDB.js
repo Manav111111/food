@@ -457,7 +457,6 @@ async function getDetailedNutrition(recipeId) {
     return cache[cacheKey].data;
   }
 
-  // The user recommended recipe-nutri/nutritioninfo for ALL nutrients
   const nutritionUrl = `${API_BASE}/recipe-nutri/nutritioninfo?recipe_id=${recipeId}`;
 
   try {
@@ -468,36 +467,37 @@ async function getDetailedNutrition(recipeId) {
       },
     });
 
-    if (!response.ok) {
-      console.error(`[RecipeDB] Nutrition fetch failed: ${response.status}`);
-      return null;
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.payload?.data?.length > 0) {
+        const nutritionData = data.payload.data[0];
+        cache[cacheKey] = { data: nutritionData, timestamp: Date.now() };
+        console.log(`[RecipeDB] Fetched exhaustive nutrition for recipe ${recipeId}`);
+        return nutritionData;
+      }
     }
-
-    const data = await response.json();
-
-    if (data.success && data.payload && data.payload.data && data.payload.data.length > 0) {
-      const nutritionData = data.payload.data[0];
-
-      // Cache it
-      cache[cacheKey] = { data: nutritionData, timestamp: Date.now() };
-
-      console.log(`[RecipeDB] Fetched exhaustive nutrition for recipe ${recipeId}`);
-      return nutritionData;
-    }
-
-
-    // Check sample recipes if API fails or for sample IDs
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    if (sample && sample.nutrition) return sample.nutrition;
-
-    return null;
   } catch (error) {
-    console.error('[RecipeDB] Nutrition fetch error:', error.message);
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    return sample ? sample.nutrition : null;
+    console.error('[RecipeDB] Nutrition API error:', error.message);
   }
+
+  // Fallback to sample recipes
+  const samples = getSampleRecipes('');
+  const sample = samples.find(s => s.id === recipeId);
+  if (sample) {
+    return sample.nutrition || {
+      'Energy (kcal)': sample.calories || 0,
+      servings: sample.servings || 1,
+      'Protein (g)': sample.protein || 0,
+      'Carbohydrate, by difference (g)': sample.carbs || 0,
+      'Total lipid (fat) (g)': sample.fat || 0,
+      'Fiber, total dietary (g)': sample.fiber || 0,
+      'Sugars, total (g)': sample.sugar || 2,
+      'Fatty acids, total saturated (g)': sample.satFat || 1,
+      'Sodium, Na (mg)': sample.sodium || 100
+    };
+  }
+
+  return null;
 }
 
 
@@ -525,42 +525,27 @@ async function getInstructions(recipeId) {
       },
     });
 
-    if (!response.ok) {
-      console.error(`[RecipeDB] Instructions fetch failed: ${response.status}`);
-      return null;
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.data) {
+        let instructionsText = "";
+        if (typeof data.data === 'string') instructionsText = data.data;
+        else if (data.data.instructions) instructionsText = data.data.instructions;
+        else if (Array.isArray(data.data)) instructionsText = data.data.join('\n');
+
+        const result = { instructions: instructionsText };
+        cache[cacheKey] = { data: result, timestamp: Date.now() };
+        return result;
+      }
     }
-
-    const data = await response.json();
-
-    if (data.success && data.data) {
-      // Normalize: check if it's a string or an object with instructions
-      let instructionsText = "";
-      if (typeof data.data === 'string') instructionsText = data.data;
-      else if (data.data.instructions) instructionsText = data.data.instructions;
-      else if (Array.isArray(data.data)) instructionsText = data.data.join('\n');
-
-      const result = { instructions: instructionsText };
-
-      // Cache it
-      cache[cacheKey] = { data: result, timestamp: Date.now() };
-
-      console.log(`[RecipeDB] Fetched instructions for recipe ${recipeId}`);
-      return result;
-    }
-
-
-    // Check sample recipes
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    if (sample && sample.instructions) return { instructions: sample.instructions };
-
-    return null;
   } catch (error) {
     console.error('[RecipeDB] Instructions fetch error:', error.message);
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    return sample ? { instructions: sample.instructions } : null;
   }
+
+  // Always check sample recipes as fallback
+  const samples = getSampleRecipes('');
+  const sample = samples.find(s => s.id === recipeId);
+  return sample ? { instructions: sample.instructions } : null;
 }
 
 
@@ -578,24 +563,21 @@ async function getTasteProfile(recipeId) {
     const response = await fetch(tasteUrl, {
       headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
     });
-    if (!response.ok) return null;
-    const data = await response.json();
-    if (data.success && data.data) {
-      cache[cacheKey] = { data: data.data, timestamp: Date.now() };
-      return data.data;
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.data) {
+        cache[cacheKey] = { data: data.data, timestamp: Date.now() };
+        return data.data;
+      }
     }
-    // Check sample recipes
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    if (sample && sample.taste) return sample.taste;
-
-    return null;
   } catch (error) {
     console.error('[RecipeDB] Taste fetch error:', error.message);
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    return sample ? sample.taste : null;
   }
+
+  // Always check sample recipes as fallback
+  const samples = getSampleRecipes('');
+  const sample = samples.find(s => s.id === recipeId);
+  return sample ? sample.taste : null;
 }
 
 
@@ -614,24 +596,21 @@ async function getFlavorProfile(recipeId) {
     const response = await fetch(flavorUrl, {
       headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
     });
-    if (!response.ok) return null;
-    const data = await response.json();
-    if (data.success && data.data) {
-      cache[cacheKey] = { data: data.data, timestamp: Date.now() };
-      return data.data;
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.data) {
+        cache[cacheKey] = { data: data.data, timestamp: Date.now() };
+        return data.data;
+      }
     }
-    // Check sample recipes
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    if (sample && sample.flavor) return sample.flavor;
-
-    return null;
   } catch (error) {
     console.error('[RecipeDB] Flavor fetch error:', error.message);
-    const samples = getSampleRecipes('');
-    const sample = samples.find(s => s.id === recipeId);
-    return sample ? sample.flavor : null;
   }
+
+  // Always check sample recipes as fallback
+  const samples = getSampleRecipes('');
+  const sample = samples.find(s => s.id === recipeId);
+  return sample ? sample.flavor : null;
 }
 
 /**
@@ -659,7 +638,7 @@ async function getIngredientsWithCategories(recipeId) {
 
 /**
  * Get utensils for a recipe
-
+ 
  * @param {string} recipeId
  */
 async function getUtensils(recipeId) {
@@ -669,17 +648,19 @@ async function getUtensils(recipeId) {
   const url = `${API_BASE}/recipe-utensils/utensils/${recipeId}`;
   try {
     const res = await fetch(url, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
-    if (!res.ok) throw new Error('API Fail');
-    const data = await res.json();
-    if (data.success && data.data) {
-      cache[cacheKey] = { data: data.data, timestamp: Date.now() };
-      return data.data;
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.data) {
+        cache[cacheKey] = { data: data.data, timestamp: Date.now() };
+        return data.data;
+      }
     }
   } catch (e) {
-    const sample = getSampleRecipes('').find(s => s.id === recipeId);
-    return sample ? sample.utensils : null;
+    console.error('[RecipeDB] Utensils fetch error:', e.message);
   }
-  return null;
+
+  const sample = getSampleRecipes('').find(s => s.id === recipeId);
+  return sample ? sample.utensils : null;
 }
 
 /**
@@ -693,17 +674,19 @@ async function getProcesses(recipeId) {
   const url = `${API_BASE}/recipe-processes/processes/${recipeId}`;
   try {
     const res = await fetch(url, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
-    if (!res.ok) throw new Error('API Fail');
-    const data = await res.json();
-    if (data.success && data.data) {
-      cache[cacheKey] = { data: data.data, timestamp: Date.now() };
-      return data.data;
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.data) {
+        cache[cacheKey] = { data: data.data, timestamp: Date.now() };
+        return data.data;
+      }
     }
   } catch (e) {
-    const sample = getSampleRecipes('').find(s => s.id === recipeId);
-    return sample ? sample.processes : null;
+    console.error('[RecipeDB] Processes fetch error:', e.message);
   }
-  return null;
+
+  const sample = getSampleRecipes('').find(s => s.id === recipeId);
+  return sample ? sample.processes : null;
 }
 
 

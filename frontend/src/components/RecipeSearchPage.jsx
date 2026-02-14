@@ -4,13 +4,20 @@ import React, { useState, useEffect } from 'react';
  * DetailedRecipeCard Component
  * Fetches and displays all intelligence details for a single recipe result.
  */
-function DetailedRecipeCard({ recipe }) {
+import GoalSelector from './GoalSelector';
+import HealthAssessment from './HealthAssessment';
+
+function DetailedRecipeCard({ recipe, selectedGoal }) {
   const [details, setDetails] = useState({
     nutrition: null,
     instructions: null,
     taste: null,
     flavor: null,
+    utensils: null,
+    processes: null,
     structuredIngredients: null,
+    healthIntel: null,
+    precisionHealth: null,
     loading: false
   });
 
@@ -18,19 +25,27 @@ function DetailedRecipeCard({ recipe }) {
     async function fetchFullDetails() {
       setDetails(prev => ({ ...prev, loading: true }));
       try {
-        const [nutRes, instRes, tasteRes, flavorRes, utensilsRes, procRes, ingCatRes] = await Promise.all([
+        const queryParams = new URLSearchParams({
+          title: recipe.title,
+          goal: selectedGoal || 'balanced_diet'
+        }).toString();
+
+        const [nutRes, instRes, tasteRes, flavorRes, utensilsRes, procRes, ingCatRes, healthRes, precisionRes] = await Promise.all([
           fetch(`/api/recipes/${recipe.id}/nutrition`),
           fetch(`/api/recipes/${recipe.id}/instructions`),
           fetch(`/api/recipes/${recipe.id}/taste`),
           fetch(`/api/recipes/${recipe.id}/flavor`),
           fetch(`/api/recipes/${recipe.id}/utensils`),
           fetch(`/api/recipes/${recipe.id}/processes`),
-          fetch(`/api/recipes/${recipe.id}/ingredients-categories`)
+          fetch(`/api/recipes/${recipe.id}/ingredients-categories`),
+          fetch(`/api/recipes/${recipe.id}/health-intel?${queryParams}`),
+          fetch(`/api/recipes/${recipe.id}/precision-health`)
         ]);
 
-        const [nutData, instData, tasteData, flavorData, utensilsData, procData, ingCatData] = await Promise.all([
+        const [nutData, instData, tasteData, flavorData, utensilsData, procData, ingCatData, healthData, precisionData] = await Promise.all([
           nutRes.json(), instRes.json(), tasteRes.json(), flavorRes.json(),
-          utensilsRes.json(), procRes.json(), ingCatRes.json()
+          utensilsRes.json(), procRes.json(), ingCatRes.json(), healthRes.json(),
+          precisionRes.json()
         ]);
 
         setDetails({
@@ -41,6 +56,8 @@ function DetailedRecipeCard({ recipe }) {
           utensils: utensilsData.utensils || recipe.utensils,
           processes: procData.processes || recipe.processes,
           structuredIngredients: ingCatData.payload,
+          healthIntel: healthData.success ? healthData : null,
+          precisionHealth: precisionData.success ? precisionData : null,
           loading: false
         });
       } catch (err) {
@@ -49,127 +66,234 @@ function DetailedRecipeCard({ recipe }) {
       }
     }
     fetchFullDetails();
-  }, [recipe.id]);
+  }, [recipe.id, recipe.title, selectedGoal]);
 
-  const nutritionData = details.nutrition;
   const ingredients = details.structuredIngredients?.ingredients || recipe.ingredients || [];
 
-  // Robust instruction fallback: if instructions are empty, use processes
-  let instructionText = details.instructions;
-  if (!instructionText || instructionText === "No instructions provided.") {
+  // Ensure instructionText is a string (handle nested object or empty objects from API)
+  let rawInstructions = details.instructions?.instructions || details.instructions;
+  let instructionText = (typeof rawInstructions === 'string' && rawInstructions.trim() !== "")
+    ? rawInstructions
+    : "No instructions provided.";
+
+  if (instructionText === "No instructions provided.") {
     if (recipe.processes && recipe.processes.length > 0) {
       instructionText = "Step-by-step cooking: " + recipe.processes.join(" → ");
-    } else if (details.processes && details.processes.length > 0) {
-      instructionText = "Step-by-step cooking: " + details.processes.join(" → ");
+    } else {
+      const procList = Array.isArray(details.processes) ? details.processes : [];
+      if (procList.length > 0) {
+        instructionText = "Step-by-step cooking: " + procList.join(" → ");
+      }
     }
   }
 
-  const utensils = details.utensils || recipe.utensils || [];
-  const processes = details.processes || recipe.processes || [];
+  const utensils = Array.isArray(details.utensils) ? details.utensils : (Array.isArray(recipe.utensils) ? recipe.utensils : []);
+  const processes = Array.isArray(details.processes) ? details.processes : (Array.isArray(recipe.processes) ? recipe.processes : []);
+  const healthIntel = details.healthIntel;
+  const nutritionData = details.nutrition && typeof details.nutrition === 'object' ? details.nutrition : null;
 
   return (
-    <div className="glass-card" style={{ marginBottom: '2rem', padding: '2rem', width: '100%', border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1rem' }}>
-        <div>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: '800' }}>{recipe.title}</h2>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <span className="nut-badge" style={{ background: 'rgba(255,107,107,0.15)', color: '#ff6b6b' }}>📍 {recipe.region}</span>
-            <span className="nut-badge" style={{ background: 'rgba(78,205,196,0.15)', color: '#4ecdc4' }}>⏱️ {recipe.totalTime} mins</span>
-            <span className="nut-badge" style={{ background: 'rgba(255,230,109,0.15)', color: '#f9ca24' }}>👥 {recipe.servings} servings</span>
-            {recipe.vegan && <span className="nut-badge" style={{ background: 'rgba(46, 204, 113, 0.2)', color: '#2ecc71' }}>Vegan</span>}
+    <div className="recipe-detail-card" style={{ marginBottom: '4rem', width: '100%', position: 'relative' }}>
+      {/* Search Result Header Card */}
+      <div className="glass-card" style={{ padding: '2rem', marginBottom: '2rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+          <div>
+            <h2 style={{ fontSize: '3rem', margin: 0, color: 'var(--text-primary)', fontWeight: '900' }}>{recipe.title}</h2>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+              <span className="nut-badge" style={{ background: 'rgba(255,107,107,0.15)', color: '#ff6b6b' }}>📍 {recipe.region}</span>
+              <span className="nut-badge" style={{ background: 'rgba(78,205,196,0.15)', color: '#4ecdc4' }}>⏱️ {recipe.totalTime} mins</span>
+              <span className="nut-badge" style={{ background: 'rgba(255,230,109,0.15)', color: '#f9ca24' }}>👥 {recipe.servings} Servings</span>
+            </div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '3.5rem', fontWeight: '900', color: 'var(--accent)', lineHeight: 1 }}>{recipe.calories}</div>
+            <div style={{ fontSize: '0.8rem', opacity: 0.7, letterSpacing: '3px', fontWeight: '800', marginTop: '0.5rem' }}>TOTAL CALORIES</div>
           </div>
         </div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '2.5rem', fontWeight: '900', color: 'var(--accent)' }}>{recipe.calories}</div>
-          <div style={{ fontSize: '0.8rem', opacity: 0.8, letterSpacing: '2px', fontWeight: '700' }}>TOTAL CALORIES</div>
+
+        {/* Macros */}
+        <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem' }}>
+          <div style={{ flex: 1, padding: '1.5rem', borderRadius: '16px', background: 'rgba(52, 152, 219, 0.1)', textAlign: 'center' }}>
+            <div style={{ opacity: 0.7, fontSize: '0.9rem', marginBottom: '0.5rem' }}>Carbs</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.carbs}g</div>
+          </div>
+          <div style={{ flex: 1, padding: '1.5rem', borderRadius: '16px', background: 'rgba(46, 204, 113, 0.1)', textAlign: 'center' }}>
+            <div style={{ opacity: 0.7, fontSize: '0.9rem', marginBottom: '0.5rem' }}>Protein</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.protein}g</div>
+          </div>
+          <div style={{ flex: 1, padding: '1.5rem', borderRadius: '16px', background: 'rgba(231, 76, 60, 0.1)', textAlign: 'center' }}>
+            <div style={{ opacity: 0.7, fontSize: '0.9rem', marginBottom: '0.5rem' }}>Fat</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.fat}g</div>
+          </div>
         </div>
       </div>
 
-      {/* Basic Metrics Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-        <div className="glass-card" style={{ background: 'rgba(52, 152, 219, 0.1)', padding: '1.2rem', textAlign: 'center' }}>
-          <div style={{ opacity: 0.8, fontSize: '0.85rem', marginBottom: '0.3rem', fontWeight: '600' }}>CARBS</div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.carbs}g</div>
-        </div>
-        <div className="glass-card" style={{ background: 'rgba(46, 204, 113, 0.1)', padding: '1.2rem', textAlign: 'center' }}>
-          <div style={{ opacity: 0.8, fontSize: '0.85rem', marginBottom: '0.3rem', fontWeight: '600' }}>PROTEIN</div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.protein}g</div>
-        </div>
-        <div className="glass-card" style={{ background: 'rgba(231, 76, 60, 0.1)', padding: '1.2rem', textAlign: 'center' }}>
-          <div style={{ opacity: 0.8, fontSize: '0.85rem', marginBottom: '0.3rem', fontWeight: '600' }}>FAT</div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.fat}g</div>
-        </div>
-      </div>
+      {/* PRECISION HEALTH ASSESSMENT */}
+      {details.precisionHealth && (
+        <div style={{ padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '24px', marginBottom: '3rem', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <div style={{
+                background: details.precisionHealth.color,
+                color: '#fff',
+                padding: '0.8rem 1.5rem',
+                borderRadius: '12px',
+                fontWeight: '900',
+                fontSize: '1.1rem',
+                boxShadow: `0 10px 20px ${details.precisionHealth.color}33`
+              }}>
+                {details.precisionHealth.category.toUpperCase()}
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: '800' }}>
+                Health Score: <span style={{ color: details.precisionHealth.color }}>{details.precisionHealth.healthScore}</span>
+              </div>
+            </div>
+            <div style={{ fontSize: '0.75rem', opacity: 0.5, fontWeight: '800', letterSpacing: '3px' }}>PRECISION ANALYTICS</div>
+          </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
-        {/* Left Column: Ingredients List */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            {details.precisionHealth.benefits.map((b, i) => (
+              <span key={i} className="nut-badge" style={{ background: 'rgba(46, 204, 113, 0.1)', color: '#2ecc71', border: '1px solid rgba(46, 204, 113, 0.2)', padding: '0.6rem 1.2rem', fontSize: '1rem' }}>
+                ✨ {b}
+              </span>
+            ))}
+            {details.precisionHealth.riskFactors.map((r, i) => (
+              <span key={i} className="nut-badge" style={{ background: 'rgba(231, 76, 60, 0.1)', color: '#e74c3c', border: '1px solid rgba(231, 76, 60, 0.2)', padding: '0.6rem 1.2rem', fontSize: '1rem' }}>
+                ⚠️ {r}
+              </span>
+            ))}
+            {details.precisionHealth.benefits.length === 0 && details.precisionHealth.riskFactors.length === 0 && (
+              <span style={{ opacity: 0.5, fontStyle: 'italic' }}>Balanced nutritional profile detected.</span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* HEALTH ASSESSMENT (MATCHING SCREENSHOT) */}
+      {healthIntel && (
+        <div className="health-dashboard-section" style={{ marginBottom: '3rem' }}>
+          <div className="glass-card health-assessment-card" style={{
+            textAlign: 'center',
+            padding: '3rem',
+            background: 'rgba(255,255,255,0.03)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '24px',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: '1.5rem', left: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.2rem', fontWeight: '700' }}>
+              <span style={{ color: 'var(--danger)' }}>❤️</span> Health Assessment
+            </div>
+
+            <div style={{ margin: '2rem auto' }}>
+              <HealthAssessment score={healthIntel.suitability} suitability={healthIntel.suitability} />
+            </div>
+
+            <div className={`suitability-badge suitability-badge--${healthIntel.suitability.suitable ? 'suitable' : 'not-suitable'}`} style={{ margin: '0 auto', display: 'inline-flex' }}>
+              {healthIntel.suitability.suitable ? '✓ Suitable' : '✗ Not Suitable'}
+            </div>
+          </div>
+
+          {/* HEALTHIER ALTERNATIVES (MATCHING SCREENSHOT) */}
+          {healthIntel.alternatives && healthIntel.alternatives.length > 0 && (
+            <div className="glass-card health-alternatives-card" style={{
+              marginTop: '2rem',
+              padding: '2rem',
+              background: 'rgba(255,255,255,0.02)',
+              borderRadius: '24px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: '700' }}>
+                  <span style={{ color: 'var(--accent)' }}>🔄</span> Healthier Alternatives
+                </div>
+                <span style={{ fontSize: '0.7rem', opacity: 0.6, fontWeight: '800', letterSpacing: '2px' }}>FLAVORDB</span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {healthIntel.alternatives.map((alt, idx) => (
+                  <div key={idx} className="alt-item" style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '1.5rem',
+                    background: 'rgba(255,255,255,0.05)',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(255,255,255,0.05)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                      <span style={{ fontSize: '1.5rem', fontWeight: '900', color: 'var(--danger)', opacity: 0.6 }}>#{idx + 1}</span>
+                      <div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: '700' }}>{alt.name}</div>
+                        <div style={{ fontSize: '0.85rem', opacity: 0.6, marginTop: '0.3rem' }}>🔍 {alt.cooking_method}</div>
+                      </div>
+                    </div>
+                    <div className="match-badge" style={{
+                      padding: '0.5rem 1rem',
+                      borderRadius: '8px',
+                      background: 'rgba(78, 205, 196, 0.1)',
+                      color: 'var(--success)',
+                      fontSize: '0.85rem',
+                      fontWeight: '800'
+                    }}>
+                      {(alt.similarity * 1).toFixed(2)}% match
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Main Details Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem' }}>
         <div>
-          <section style={{ marginBottom: '2.5rem' }}>
-            <h3 style={{ borderLeft: '6px solid var(--accent)', paddingLeft: '1rem', marginBottom: '1.5rem', fontSize: '1.5rem' }}>Ingredients List</h3>
+          <section style={{ marginBottom: '3rem' }}>
+            <h3 style={{ borderLeft: '6px solid var(--accent)', paddingLeft: '1.5rem', marginBottom: '1.5rem', fontSize: '1.5rem' }}>Full Ingredient List</h3>
             <ul style={{ listStyle: 'none', padding: 0 }}>
-              {ingredients.length > 0 ? (
-                ingredients.map((ing, i) => (
-                  <li key={i} style={{ padding: '0.8rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.1rem' }}>
-                    <span style={{ color: 'var(--accent)', fontSize: '1.2rem' }}>✔</span>
-                    <span style={{ color: 'var(--text-primary)' }}>{typeof ing === 'string' ? ing : ing.name}</span>
-                  </li>
-                ))
-              ) : (
-                <li style={{ opacity: 0.7, fontStyle: 'italic', fontSize: '1.1rem' }}>Loading ingredients or none listed...</li>
-              )}
+              {ingredients.map((ing, i) => (
+                <li key={i} style={{ padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.2rem' }}>
+                  <span style={{ color: 'var(--accent)' }}>✅</span> {typeof ing === 'string' ? ing : ing.name}
+                </li>
+              ))}
             </ul>
           </section>
 
           <section>
-            <h3 style={{ borderLeft: '6px solid var(--accent)', paddingLeft: '1rem', marginBottom: '1.5rem', fontSize: '1.5rem' }}>Cooking Instructions</h3>
-            {details.loading ? (
-              <div style={{ padding: '2rem', textAlign: 'center' }}>
-                <div className="loading-spinner" style={{ scale: '0.6' }}></div>
-                <p style={{ marginTop: '0.5rem' }}>Fetching cooking steps...</p>
-              </div>
-            ) : (
-              <p style={{ lineHeight: '1.8', color: 'var(--text-primary)', whiteSpace: 'pre-wrap', fontSize: '1.2rem', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '12px' }}>
-                {instructionText || "No detailed instructions available. Try following the cooking processes listed on the right."}
-              </p>
-            )}
+            <h3 style={{ borderLeft: '6px solid var(--accent)', paddingLeft: '1.5rem', marginBottom: '1.5rem', fontSize: '1.5rem' }}>Step-by-Step Cooking</h3>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '16px', lineHeight: 1.8, fontSize: '1.2rem', color: 'rgba(255,255,255,0.9)' }}>
+              {details.loading ? "Loading instructions..." : instructionText}
+            </div>
           </section>
         </div>
 
-
-        {/* Right Column: High Intelligence Metrics */}
         <div>
           {/* Utensils & Processes */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-            <div>
-              <h4 style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '0.5rem' }}>🍳 UTENSILS</h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                {utensils.length > 0 ? (
-                  utensils.map((u, i) => <span key={i} style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>{u}</span>)
-                ) : <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>N/A</span>}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div className="glass-card" style={{ padding: '1.5rem' }}>
+              <div style={{ opacity: 0.6, fontSize: '0.8rem', fontWeight: '800', marginBottom: '1rem' }}>REQUIRED UTENSILS</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {utensils.map((u, i) => <span key={i} className="nut-badge" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.75rem' }}>{u}</span>)}
               </div>
             </div>
-            <div>
-              <h4 style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '0.5rem' }}>⚙️ PROCESSES</h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                {processes.length > 0 ? (
-                  processes.map((p, i) => <span key={i} style={{ fontSize: '0.75rem', background: 'rgba(52, 152, 219, 0.1)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>{p}</span>)
-                ) : <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>N/A</span>}
+            <div className="glass-card" style={{ padding: '1.5rem' }}>
+              <div style={{ opacity: 0.6, fontSize: '0.8rem', fontWeight: '800', marginBottom: '1rem' }}>TECHNIQUES</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {processes.map((p, i) => <span key={i} className="nut-badge" style={{ background: 'rgba(52, 152, 219, 0.1)', fontSize: '0.75rem', color: '#3498db' }}>{p}</span>)}
               </div>
             </div>
           </div>
 
-
-          {/* Taste Profile */}
+          {/* Taste Visualizer */}
           {details.taste && (
-            <div className="glass-card" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Sensory Taste Profile</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
+            <div className="glass-card" style={{ padding: '2rem', marginBottom: '2rem' }}>
+              <h4 style={{ marginBottom: '1.5rem', fontSize: '1.1rem' }}>Predicted Sensory Profile</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
                 {Object.entries(details.taste).map(([key, val]) => (
                   <div key={key} style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.65rem', opacity: 0.6, marginBottom: '0.3rem', textTransform: 'uppercase' }}>{key}</div>
-                    <div style={{ height: '80px', width: '12px', background: 'rgba(255,255,255,0.05)', margin: '0 auto', borderRadius: '6px', position: 'relative', overflow: 'hidden' }}>
-                      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: `${Math.min(val * 100, 100)}%`, background: 'var(--accent)', borderRadius: '6px' }}></div>
+                    <div style={{ fontSize: '0.7rem', opacity: 0.6, marginBottom: '0.5rem', textTransform: 'uppercase' }}>{key}</div>
+                    <div style={{ height: '100px', width: '15px', background: 'rgba(255,255,255,0.05)', margin: '0 auto', borderRadius: '10px', position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: `${val * 100}%`, background: 'var(--accent)', transition: 'height 0.5s ease' }}></div>
                     </div>
                   </div>
                 ))}
@@ -177,15 +301,15 @@ function DetailedRecipeCard({ recipe }) {
             </div>
           )}
 
-          {/* Exhaustive Nutrition Table */}
+          {/* Detailed Nutrition Table */}
           {nutritionData && (
-            <div className="glass-card" style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Exhaustive Nutrition (Detailed)</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem', fontSize: '0.8rem' }}>
+            <div className="glass-card" style={{ padding: '2rem', background: 'rgba(0,0,0,0.3)' }}>
+              <h4 style={{ marginBottom: '1rem' }}>Exhaustive Nutrition Data</h4>
+              <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                 {Object.entries(nutritionData).filter(([k]) => !['_id', 'Recipe_id', 'Recipe_title', 'recipeTitle', 'ndb_id'].includes(k)).map(([k, v]) => (
-                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '0.2rem' }}>
+                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '0.4rem', fontSize: '0.85rem' }}>
                     <span style={{ opacity: 0.6 }}>{k.replace(/_/g, ' ')}</span>
-                    <span style={{ fontWeight: '600' }}>{v}</span>
+                    <span style={{ fontWeight: '700' }}>{v}</span>
                   </div>
                 ))}
               </div>
@@ -203,6 +327,7 @@ export default function RecipeSearchPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTriggered, setSearchTriggered] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState('balanced_diet');
 
   const handleSearch = async (e) => {
     if (e) e.preventDefault();
@@ -228,86 +353,91 @@ export default function RecipeSearchPage() {
   };
 
   return (
-    <div className="app-container" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
-      <div className="hero" style={{ textAlign: 'center', marginBottom: '4rem' }}>
-        <h1 className="hero__title" style={{ fontSize: '4.5rem', fontWeight: '900' }}>🍽️ Recipe Intelligence</h1>
-        <p className="hero__subtitle" style={{ fontSize: '1.4rem', opacity: 0.8, color: 'var(--text-primary)' }}>Deep-dive into recipes, nutrition, and cooking techniques</p>
+    <div className="app-container" style={{ paddingTop: '5rem', paddingBottom: '10rem' }}>
+      <div className="hero" style={{ textAlign: 'center', marginBottom: '5rem' }}>
+        <h1 className="hero__title" style={{ fontSize: '5rem', fontWeight: '900', color: 'var(--text-primary)' }}>🍽️ Recipe Intelligence</h1>
+        <p className="hero__subtitle" style={{ fontSize: '1.5rem', opacity: 0.8, maxWidth: '800px', margin: '1rem auto' }}>
+          Connect your health goals with deep nutritional analytics and flavoring intelligence.
+        </p>
       </div>
 
-      {/* Large Visible Search Bar */}
+      {/* GOAL SELECTOR PART (MATCHING SCREENSHOT) */}
+      <div style={{ maxWidth: '1000px', margin: '0 auto 3rem', textAlign: 'center' }}>
+        <GoalSelector selectedGoal={selectedGoal} onGoalChange={setSelectedGoal} />
+      </div>
+
+      {/* SEARCH/ANALYZE BOX (MATCHING SCREENSHOT) */}
       <div className="glass-card" style={{
         maxWidth: '1000px',
         margin: '0 auto 5rem',
-        padding: '2rem',
-        boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
-        background: 'rgba(255,255,255,0.95)',
-        border: '1px solid rgba(0,0,0,0.1)'
+        padding: '2.5rem',
+        background: 'rgba(255,255,255,0.98)',
+        borderRadius: '24px',
+        boxShadow: '0 30px 60px rgba(0,0,0,0.12)'
       }}>
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem' }}>
+        <form onSubmit={handleSearch}>
           <input
             type="text"
-            className="goal-pill"
             style={{
-              flex: 1,
-              padding: '1.5rem 2.5rem',
-              background: '#fff',
-              border: '2px solid var(--accent)',
-              fontSize: '1.5rem',
-              color: '#333',
+              width: '100%',
+              padding: '2rem',
+              background: '#f8f9fa',
+              border: '2px solid rgba(0,0,0,0.05)',
+              fontSize: '1.8rem',
+              color: '#1a1a1a',
               borderRadius: '16px',
-              outline: 'none'
+              outline: 'none',
+              marginBottom: '1.5rem',
+              fontWeight: '700'
             }}
             placeholder="Search recipes (e.g. Samosa, Pasta, Pizza)..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <button type="submit" className="analyze-btn" style={{
-            marginTop: 0,
-            width: 'auto',
-            padding: '0 4rem',
-            fontSize: '1.4rem',
+            width: '100%',
+            padding: '1.8rem',
+            fontSize: '1.5rem',
+            fontWeight: '900',
+            letterSpacing: '1px',
+            backgroundColor: '#d63384', // Matches the red/pink button in screenshot
+            color: 'white',
             borderRadius: '16px',
-            backgroundColor: 'var(--accent)',
-            color: 'white'
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1rem',
+            cursor: 'pointer',
+            transition: 'transform 0.2s'
           }}>
-            🔍 Search
+            🔍 Analyze "{query || 'Your Recipe'}"
           </button>
         </form>
       </div>
 
-
       {loading && (
-        <div style={{ textAlign: 'center', padding: '5rem' }}>
-          <div className="loading-spinner"></div>
-          <p style={{ marginTop: '2rem', fontSize: '1.2rem', color: 'var(--accent)' }}>Analyzing database for "{query}"...</p>
+        <div style={{ textAlign: 'center', padding: '10rem 0' }}>
+          <div className="loading-spinner" style={{ width: '80px', height: '80px' }}></div>
+          <p style={{ marginTop: '2rem', fontSize: '1.5rem', fontWeight: '700', color: 'var(--accent)' }}>Fetching Intelligence for "{query}"...</p>
         </div>
       )}
 
       {error && (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div className="glass-card" style={{ borderColor: 'var(--danger)', textAlign: 'center', padding: '3rem' }}>
-            <span style={{ fontSize: '4rem' }}>😕</span>
-            <p style={{ fontSize: '1.5rem', marginTop: '1rem' }}>{error}</p>
-          </div>
+        <div className="glass-card" style={{ maxWidth: '800px', margin: '0 auto', borderColor: 'var(--danger)', textAlign: 'center', padding: '4rem' }}>
+          <span style={{ fontSize: '5rem' }}>❌</span>
+          <p style={{ fontSize: '1.8rem', marginTop: '1.5rem' }}>{error}</p>
         </div>
       )}
 
-      {!loading && !error && searchTriggered && recipes.length === 0 && (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>
-            <span style={{ fontSize: '4rem' }}>🧐</span>
-            <p style={{ fontSize: '1.5rem', marginTop: '1rem' }}>No exact matches for "{query}". Try something else!</p>
-          </div>
-        </div>
-      )}
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '5rem' }}>
         {recipes.map((recipe) => (
-          <DetailedRecipeCard key={recipe.id} recipe={recipe} />
+          <DetailedRecipeCard key={recipe.id} recipe={recipe} selectedGoal={selectedGoal} />
         ))}
       </div>
     </div>
   );
 }
+
 
 
