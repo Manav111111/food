@@ -375,7 +375,7 @@ export default function RecipeSearchPage() {
     <div className="app-container" style={{ paddingTop: '5rem', paddingBottom: '10rem' }}>
       <div className="hero" style={{ textAlign: 'center', marginBottom: '5rem' }}>
         <h1 className="hero__title" style={{ fontSize: '5rem', fontWeight: '900', color: 'var(--text-primary)' }}>🍽️ Recipe Intelligence</h1>
-        <p className="hero__subtitle" style={{ fontSize: '1.5rem', opacity: 0.8, maxWidth: '800px', margin: '1rem auto' }}>
+        <p className="hero__subtitle" style={{ fontSize: '1.5rem', opacity: 0.8, maxWidth: '800px', margin: '1rem auto', fontWeight: 'bold' }}>
           Connect your health goals with deep nutritional analytics and flavoring intelligence.
         </p>
       </div>
