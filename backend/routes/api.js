@@ -335,7 +335,7 @@ router.get('/recipes/:id/utensils', async (req, res) => {
 /**
  * GET /api/recipes/:id/processes
  */
-router.get('/api/recipes/:id/processes', async (req, res) => {
+router.get('/recipes/:id/processes', async (req, res) => {
   try {
     const processes = await RecipeDBService.getProcesses(req.params.id);
     res.json({ success: true, processes });
@@ -347,7 +347,7 @@ router.get('/api/recipes/:id/processes', async (req, res) => {
 /**
  * GET /api/recipes/:id/ingredients-categories
  */
-router.get('/api/recipes/:id/ingredients-categories', async (req, res) => {
+router.get('/recipes/:id/ingredients-categories', async (req, res) => {
   try {
     const ingredientsData = await RecipeDBService.getIngredientsWithCategories(req.params.id);
     res.json({ success: true, payload: ingredientsData });
@@ -355,6 +355,7 @@ router.get('/api/recipes/:id/ingredients-categories', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
 
 module.exports = router;
 

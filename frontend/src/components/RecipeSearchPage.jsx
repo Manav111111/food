@@ -18,16 +18,19 @@ function DetailedRecipeCard({ recipe }) {
     async function fetchFullDetails() {
       setDetails(prev => ({ ...prev, loading: true }));
       try {
-        const [nutRes, instRes, tasteRes, flavorRes, ingCatRes] = await Promise.all([
+        const [nutRes, instRes, tasteRes, flavorRes, utensilsRes, procRes, ingCatRes] = await Promise.all([
           fetch(`/api/recipes/${recipe.id}/nutrition`),
           fetch(`/api/recipes/${recipe.id}/instructions`),
           fetch(`/api/recipes/${recipe.id}/taste`),
           fetch(`/api/recipes/${recipe.id}/flavor`),
+          fetch(`/api/recipes/${recipe.id}/utensils`),
+          fetch(`/api/recipes/${recipe.id}/processes`),
           fetch(`/api/recipes/${recipe.id}/ingredients-categories`)
         ]);
 
-        const [nutData, instData, tasteData, flavorData, ingCatData] = await Promise.all([
-          nutRes.json(), instRes.json(), tasteRes.json(), flavorRes.json(), ingCatRes.json()
+        const [nutData, instData, tasteData, flavorData, utensilsData, procData, ingCatData] = await Promise.all([
+          nutRes.json(), instRes.json(), tasteRes.json(), flavorRes.json(),
+          utensilsRes.json(), procRes.json(), ingCatRes.json()
         ]);
 
         setDetails({
@@ -35,6 +38,8 @@ function DetailedRecipeCard({ recipe }) {
           instructions: instData.instructions,
           taste: tasteData.taste,
           flavor: flavorData.flavor,
+          utensils: utensilsData.utensils || recipe.utensils,
+          processes: procData.processes || recipe.processes,
           structuredIngredients: ingCatData.payload,
           loading: false
         });
@@ -49,6 +54,8 @@ function DetailedRecipeCard({ recipe }) {
   const nutritionData = details.nutrition;
   const ingredients = details.structuredIngredients?.ingredients || recipe.ingredients || [];
   const instructions = details.instructions;
+  const utensils = details.utensils || recipe.utensils || [];
+  const processes = details.processes || recipe.processes || [];
 
   return (
     <div className="glass-card" style={{ marginBottom: '2rem', padding: '2rem', width: '100%', border: '1px solid var(--glass-border)' }}>
@@ -91,12 +98,16 @@ function DetailedRecipeCard({ recipe }) {
           <section style={{ marginBottom: '2rem' }}>
             <h3 style={{ borderLeft: '4px solid var(--accent)', paddingLeft: '1rem', marginBottom: '1rem' }}>Ingredients List</h3>
             <ul style={{ listStyle: 'none', padding: 0, marginTop: '0.5rem' }}>
-              {ingredients.map((ing, i) => (
-                <li key={i} style={{ padding: '0.6rem 0', borderBottom: '1px solid rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span style={{ color: 'var(--accent)' }}>•</span>
-                  <span>{typeof ing === 'string' ? ing : ing.name}</span>
-                </li>
-              ))}
+              {ingredients.length > 0 ? (
+                ingredients.map((ing, i) => (
+                  <li key={i} style={{ padding: '0.6rem 0', borderBottom: '1px solid rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ color: 'var(--accent)' }}>•</span>
+                    <span>{typeof ing === 'string' ? ing : ing.name}</span>
+                  </li>
+                ))
+              ) : (
+                <li style={{ opacity: 0.5 }}>No ingredients listed for this result.</li>
+              )}
             </ul>
           </section>
 
@@ -119,16 +130,21 @@ function DetailedRecipeCard({ recipe }) {
             <div>
               <h4 style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '0.5rem' }}>🍳 UTENSILS</h4>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                {recipe.utensils?.map((u, i) => <span key={i} style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>{u}</span>)}
+                {utensils.length > 0 ? (
+                  utensils.map((u, i) => <span key={i} style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>{u}</span>)
+                ) : <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>N/A</span>}
               </div>
             </div>
             <div>
               <h4 style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '0.5rem' }}>⚙️ PROCESSES</h4>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                {recipe.processes?.map((p, i) => <span key={i} style={{ fontSize: '0.75rem', background: 'rgba(52, 152, 219, 0.1)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>{p}</span>)}
+                {processes.length > 0 ? (
+                  processes.map((p, i) => <span key={i} style={{ fontSize: '0.75rem', background: 'rgba(52, 152, 219, 0.1)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>{p}</span>)
+                ) : <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>N/A</span>}
               </div>
             </div>
           </div>
+
 
           {/* Taste Profile */}
           {details.taste && (
