@@ -190,4 +190,173 @@ router.get('/health', (req, res) => {
   });
 });
 
+/**
+ * GET /api/recipes/search
+ * Search for recipes by query
+ */
+router.get('/recipes/search', async (req, res) => {
+  try {
+    const { q, page = 1, limit = 50 } = req.query;
+
+    if (!q) {
+      return res.status(400).json({ error: 'Query parameter "q" is required' });
+    }
+
+    console.log(`[Recipe Search] Query: "${q}", Page: ${page}, Limit: ${limit}`);
+
+    const recipes = await RecipeDBService.searchRecipes(q, parseInt(page), parseInt(limit));
+
+    res.json({
+      success: true,
+      query: q,
+      count: recipes.length,
+      recipes,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('[Recipe Search] Error:', error);
+    res.status(500).json({
+      error: 'Recipe search failed',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/nutrition
+ * Get detailed nutrition info for a recipe
+ */
+router.get('/recipes/:id/nutrition', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log(`[Recipe Nutrition] Fetching for recipe ID: ${id}`);
+
+    const nutrition = await RecipeDBService.getDetailedNutrition(id);
+
+    if (!nutrition) {
+      return res.status(404).json({
+        error: 'Nutrition data not found',
+        message: `No nutrition data available for recipe ${id}`
+      });
+    }
+
+    res.json({
+      success: true,
+      recipeId: id,
+      nutrition,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('[Recipe Nutrition] Error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch nutrition data',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/instructions
+ * Get cooking instructions for a recipe
+ */
+router.get('/recipes/:id/instructions', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log(`[Recipe Instructions] Fetching for recipe ID: ${id}`);
+
+    const instructions = await RecipeDBService.getInstructions(id);
+
+    if (!instructions) {
+      return res.status(404).json({
+        error: 'Instructions not found',
+        message: `No instructions available for recipe ${id}`
+      });
+    }
+
+    res.json({
+      success: true,
+      recipeId: id,
+      instructions,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('[Recipe Instructions] Error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch instructions',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/taste
+ * Get taste profile for a recipe
+ */
+router.get('/recipes/:id/taste', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const taste = await RecipeDBService.getTasteProfile(id);
+    if (!taste) return res.status(404).json({ error: 'Taste profile not found' });
+    res.json({ success: true, recipeId: id, taste });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch taste profile', message: error.message });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/flavor
+ * Get flavor profile for a recipe
+ */
+router.get('/recipes/:id/flavor', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const flavor = await RecipeDBService.getFlavorProfile(id);
+    if (!flavor) return res.status(404).json({ error: 'Flavor profile not found' });
+    res.json({ success: true, recipeId: id, flavor });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch flavor profile', message: error.message });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/utensils
+ */
+router.get('/recipes/:id/utensils', async (req, res) => {
+  try {
+    const utensils = await RecipeDBService.getUtensils(req.params.id);
+    res.json({ success: true, utensils });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/processes
+ */
+router.get('/api/recipes/:id/processes', async (req, res) => {
+  try {
+    const processes = await RecipeDBService.getProcesses(req.params.id);
+    res.json({ success: true, processes });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+/**
+ * GET /api/recipes/:id/ingredients-categories
+ */
+router.get('/api/recipes/:id/ingredients-categories', async (req, res) => {
+  try {
+    const ingredientsData = await RecipeDBService.getIngredientsWithCategories(req.params.id);
+    res.json({ success: true, payload: ingredientsData });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;
+
+
+

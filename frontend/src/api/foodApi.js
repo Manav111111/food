@@ -46,3 +46,31 @@ export async function getSupportedFoods() {
   if (!response.ok) throw new Error('Failed to fetch supported foods');
   return response.json();
 }
+
+export async function searchRecipes(query, page = 1, limit = 50) {
+  const response = await fetch(`${API_BASE}/recipes/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.message || err.error || 'Recipe search failed');
+  }
+  return response.json();
+}
+
+export async function getRecipeNutrition(recipeId) {
+  const response = await fetch(`${API_BASE}/recipes/${recipeId}/nutrition`);
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.message || err.error || 'Failed to fetch nutrition');
+  }
+  return response.json();
+}
+
+export async function getRecipeInstructions(recipeId) {
+  const response = await fetch(`${API_BASE}/recipes/${recipeId}/instructions`);
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.message || err.error || 'Failed to fetch instructions');
+  }
+  return response.json();
+}
+

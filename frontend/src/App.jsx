@@ -4,6 +4,7 @@ import ImageUpload from './components/ImageUpload';
 import GoalSelector from './components/GoalSelector';
 import ResultsCard from './components/ResultsCard';
 import LoadingSpinner from './components/LoadingSpinner';
+import RecipeSearchPage from './components/RecipeSearchPage';
 import { analyzeFood } from './api/foodApi';
 
 const SUPPORTED_FOODS = [
@@ -14,6 +15,7 @@ const SUPPORTED_FOODS = [
 ];
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState('home'); // 'home' or 'recipes'
   const [detectedFood, setDetectedFood] = useState(null);
   const [detectedLabel, setDetectedLabel] = useState(null);
   const [goal, setGoal] = useState('balanced_diet');
@@ -70,8 +72,82 @@ export default function App() {
     if (detectedFood) runAnalysis(detectedFood, goal, detectedLabel);
   }, [detectedFood, goal, detectedLabel, runAnalysis]);
 
+  // Show recipe search page if selected
+  if (currentPage === 'recipes') {
+    return (
+      <>
+        {/* Navigation */}
+        <div style={{
+          position: 'fixed',
+          top: '1rem',
+          right: '1rem',
+          zIndex: 1000,
+          display: 'flex',
+          gap: '0.5rem'
+        }}>
+          <button
+            onClick={() => setCurrentPage('home')}
+            className="goal-pill"
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: currentPage === 'home' ? 'var(--primary)' : 'var(--glass-bg)',
+              color: currentPage === 'home' ? 'white' : 'var(--text-primary)',
+            }}
+          >
+            🏠 Home
+          </button>
+          <button
+            onClick={() => setCurrentPage('recipes')}
+            className="goal-pill"
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: currentPage === 'recipes' ? 'var(--primary)' : 'var(--glass-bg)',
+              color: currentPage === 'recipes' ? 'white' : 'var(--text-primary)',
+            }}
+          >
+            🔍 Recipe Search
+          </button>
+        </div>
+        <RecipeSearchPage />
+      </>
+    );
+  }
+
   return (
     <div className="app-container">
+
+      {/* Navigation */}
+      <div style={{
+        position: 'fixed',
+        top: '1rem',
+        right: '1rem',
+        zIndex: 1000,
+        display: 'flex',
+        gap: '0.5rem'
+      }}>
+        <button
+          onClick={() => setCurrentPage('home')}
+          className="goal-pill"
+          style={{
+            padding: '0.75rem 1.5rem',
+            background: currentPage === 'home' ? 'var(--primary)' : 'var(--glass-bg)',
+            color: currentPage === 'home' ? 'white' : 'var(--text-primary)',
+          }}
+        >
+          🏠 Home
+        </button>
+        <button
+          onClick={() => setCurrentPage('recipes')}
+          className="goal-pill"
+          style={{
+            padding: '0.75rem 1.5rem',
+            background: currentPage === 'recipes' ? 'var(--primary)' : 'var(--glass-bg)',
+            color: currentPage === 'recipes' ? 'white' : 'var(--text-primary)',
+          }}
+        >
+          🔍 Recipe Search
+        </button>
+      </div>
 
       {/* ── HERO ── */}
       <section className="hero">
@@ -208,6 +284,13 @@ export default function App() {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
               Try: samosa, pizza, biryani, grilled chicken, idli, pasta, sushi
             </p>
+            <button
+              onClick={() => setCurrentPage('recipes')}
+              className="analyze-btn"
+              style={{ marginTop: '1rem' }}
+            >
+              🔍 Or Search Recipes Directly
+            </button>
           </div>
         </div>
       )}
