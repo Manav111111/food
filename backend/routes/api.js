@@ -356,8 +356,16 @@ router.get('/recipes/:id/ingredients-categories', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/recipes/method/:method
+ */
+router.get('/recipes/method/:method', async (req, res) => {
+  try {
+    const recipes = await RecipeDBService.searchByMethod(req.params.method);
+    res.json({ success: true, recipes });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 module.exports = router;
-
-
-

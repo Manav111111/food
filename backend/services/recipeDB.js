@@ -276,6 +276,40 @@ async function searchRecipes(query, page = 1, limit = 50) {
   }
 }
 
+/**
+ * Search recipes by method (e.g., "fried", "baked")
+ * @param {string} method
+ */
+async function searchByMethod(method, page = 1, limit = 50) {
+  const cacheKey = `method_${method.toLowerCase()}_${page}_${limit}`;
+  if (cache[cacheKey] && Date.now() < cache[cacheKey].timestamp + CACHE_TTL) return cache[cacheKey].data;
+
+  const url = `${API_BASE}/recipe-method/recipes-method/${encodeURIComponent(method)}?page=${page}&limit=${limit}`;
+  try {
+    const res = await fetch(url, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
+    const data = await res.json();
+    const recipes = data.data || data.payload?.data || [];
+
+    const processed = recipes.map(recipe => ({
+      id: recipe.Recipe_id || recipe.recipeId || recipe._id || recipe.id,
+      title: recipe.Recipe_title || recipe.title || 'Unknown',
+      calories: recipe.Calories || recipe['Energy (kcal)'] || 0,
+      totalTime: recipe.total_time || 0,
+      region: recipe.Region || recipe.region,
+      ingredients: recipe.Ingredients ? recipe.Ingredients.split('||') : [],
+      utensils: recipe.Utensils ? recipe.Utensils.split('||') : [],
+      processes: recipe.Processes ? recipe.Processes.split('||') : [],
+      source: recipe.Source || 'RecipeDB (Method Search)'
+    }));
+
+    cache[cacheKey] = { data: processed, timestamp: Date.now() };
+    return processed;
+  } catch (e) {
+    console.error('[RecipeDB] Method search error:', e.message);
+    return [];
+  }
+}
+
 
 /**
  * Get sample recipes as fallback when API is unavailable
@@ -499,9 +533,13 @@ async function getInstructions(recipeId) {
     const data = await response.json();
 
     if (data.success && data.data) {
-      // Normalize to always return an object with instructions field
-      const instructions = typeof data.data === 'string' ? data.data : (data.data.instructions || data.data);
-      const result = { instructions };
+      // Normalize: check if it's a string or an object with instructions
+      let instructionsText = "";
+      if (typeof data.data === 'string') instructionsText = data.data;
+      else if (data.data.instructions) instructionsText = data.data.instructions;
+      else if (Array.isArray(data.data)) instructionsText = data.data.join('\n');
+
+      const result = { instructions: instructionsText };
 
       // Cache it
       cache[cacheKey] = { data: result, timestamp: Date.now() };
@@ -680,7 +718,9 @@ module.exports = {
   getUtensils,
   getProcesses,
   getIngredientsWithCategories,
+  searchByMethod,
 };
+
 
 
 

@@ -53,75 +53,89 @@ function DetailedRecipeCard({ recipe }) {
 
   const nutritionData = details.nutrition;
   const ingredients = details.structuredIngredients?.ingredients || recipe.ingredients || [];
-  const instructions = details.instructions;
+
+  // Robust instruction fallback: if instructions are empty, use processes
+  let instructionText = details.instructions;
+  if (!instructionText || instructionText === "No instructions provided.") {
+    if (recipe.processes && recipe.processes.length > 0) {
+      instructionText = "Step-by-step cooking: " + recipe.processes.join(" → ");
+    } else if (details.processes && details.processes.length > 0) {
+      instructionText = "Step-by-step cooking: " + details.processes.join(" → ");
+    }
+  }
+
   const utensils = details.utensils || recipe.utensils || [];
   const processes = details.processes || recipe.processes || [];
 
   return (
-    <div className="glass-card" style={{ marginBottom: '2rem', padding: '2rem', width: '100%', border: '1px solid var(--glass-border)' }}>
+    <div className="glass-card" style={{ marginBottom: '2rem', padding: '2rem', width: '100%', border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1rem' }}>
         <div>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{recipe.title}</h2>
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: '800' }}>{recipe.title}</h2>
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <span className="nut-badge" style={{ background: 'rgba(255,107,107,0.1)', color: '#ff6b6b' }}>📍 {recipe.region}</span>
-            <span className="nut-badge" style={{ background: 'rgba(78,205,196,0.1)', color: '#4ecdc4' }}>⏱️ {recipe.totalTime} mins</span>
-            <span className="nut-badge" style={{ background: 'rgba(255,230,109,0.1)', color: '#f9ca24' }}>👥 {recipe.servings} servings</span>
-            {recipe.vegan && <span className="nut-badge" style={{ background: 'rgba(46, 204, 113, 0.1)', color: '#2ecc71' }}>Vegan</span>}
+            <span className="nut-badge" style={{ background: 'rgba(255,107,107,0.15)', color: '#ff6b6b' }}>📍 {recipe.region}</span>
+            <span className="nut-badge" style={{ background: 'rgba(78,205,196,0.15)', color: '#4ecdc4' }}>⏱️ {recipe.totalTime} mins</span>
+            <span className="nut-badge" style={{ background: 'rgba(255,230,109,0.15)', color: '#f9ca24' }}>👥 {recipe.servings} servings</span>
+            {recipe.vegan && <span className="nut-badge" style={{ background: 'rgba(46, 204, 113, 0.2)', color: '#2ecc71' }}>Vegan</span>}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--accent)' }}>{recipe.calories}</div>
-          <div style={{ fontSize: '0.8rem', opacity: 0.6, letterSpacing: '1px' }}>TOTAL CALORIES</div>
+          <div style={{ fontSize: '2.5rem', fontWeight: '900', color: 'var(--accent)' }}>{recipe.calories}</div>
+          <div style={{ fontSize: '0.8rem', opacity: 0.8, letterSpacing: '2px', fontWeight: '700' }}>TOTAL CALORIES</div>
         </div>
       </div>
 
       {/* Basic Metrics Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-        <div className="glass-card" style={{ background: 'rgba(52, 152, 219, 0.05)', padding: '1rem', textAlign: 'center' }}>
-          <div style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '0.3rem' }}>CARBS</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: '600' }}>{recipe.carbs}g</div>
+        <div className="glass-card" style={{ background: 'rgba(52, 152, 219, 0.1)', padding: '1.2rem', textAlign: 'center' }}>
+          <div style={{ opacity: 0.8, fontSize: '0.85rem', marginBottom: '0.3rem', fontWeight: '600' }}>CARBS</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.carbs}g</div>
         </div>
-        <div className="glass-card" style={{ background: 'rgba(46, 204, 113, 0.05)', padding: '1rem', textAlign: 'center' }}>
-          <div style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '0.3rem' }}>PROTEIN</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: '600' }}>{recipe.protein}g</div>
+        <div className="glass-card" style={{ background: 'rgba(46, 204, 113, 0.1)', padding: '1.2rem', textAlign: 'center' }}>
+          <div style={{ opacity: 0.8, fontSize: '0.85rem', marginBottom: '0.3rem', fontWeight: '600' }}>PROTEIN</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.protein}g</div>
         </div>
-        <div className="glass-card" style={{ background: 'rgba(231, 76, 60, 0.05)', padding: '1rem', textAlign: 'center' }}>
-          <div style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '0.3rem' }}>FAT</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: '600' }}>{recipe.fat}g</div>
+        <div className="glass-card" style={{ background: 'rgba(231, 76, 60, 0.1)', padding: '1.2rem', textAlign: 'center' }}>
+          <div style={{ opacity: 0.8, fontSize: '0.85rem', marginBottom: '0.3rem', fontWeight: '600' }}>FAT</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '800' }}>{recipe.fat}g</div>
         </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
-        {/* Left Column: Ingredients & Instructions */}
+        {/* Left Column: Ingredients List */}
         <div>
-          <section style={{ marginBottom: '2rem' }}>
-            <h3 style={{ borderLeft: '4px solid var(--accent)', paddingLeft: '1rem', marginBottom: '1rem' }}>Ingredients List</h3>
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '0.5rem' }}>
+          <section style={{ marginBottom: '2.5rem' }}>
+            <h3 style={{ borderLeft: '6px solid var(--accent)', paddingLeft: '1rem', marginBottom: '1.5rem', fontSize: '1.5rem' }}>Ingredients List</h3>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
               {ingredients.length > 0 ? (
                 ingredients.map((ing, i) => (
-                  <li key={i} style={{ padding: '0.6rem 0', borderBottom: '1px solid rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ color: 'var(--accent)' }}>•</span>
-                    <span>{typeof ing === 'string' ? ing : ing.name}</span>
+                  <li key={i} style={{ padding: '0.8rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.1rem' }}>
+                    <span style={{ color: 'var(--accent)', fontSize: '1.2rem' }}>✔</span>
+                    <span style={{ color: 'var(--text-primary)' }}>{typeof ing === 'string' ? ing : ing.name}</span>
                   </li>
                 ))
               ) : (
-                <li style={{ opacity: 0.5 }}>No ingredients listed for this result.</li>
+                <li style={{ opacity: 0.7, fontStyle: 'italic', fontSize: '1.1rem' }}>Loading ingredients or none listed...</li>
               )}
             </ul>
           </section>
 
           <section>
-            <h3 style={{ borderLeft: '4px solid var(--accent)', paddingLeft: '1rem', marginBottom: '1rem' }}>Cooking Instructions</h3>
+            <h3 style={{ borderLeft: '6px solid var(--accent)', paddingLeft: '1rem', marginBottom: '1.5rem', fontSize: '1.5rem' }}>Cooking Instructions</h3>
             {details.loading ? (
-              <div className="loading-spinner" style={{ scale: '0.5', margin: '1rem 0' }}></div>
+              <div style={{ padding: '2rem', textAlign: 'center' }}>
+                <div className="loading-spinner" style={{ scale: '0.6' }}></div>
+                <p style={{ marginTop: '0.5rem' }}>Fetching cooking steps...</p>
+              </div>
             ) : (
-              <p style={{ lineHeight: '1.8', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', fontSize: '1.05rem' }}>
-                {instructions ? (typeof instructions === 'string' ? instructions : instructions.instructions) : "No instructions available for this recipe."}
+              <p style={{ lineHeight: '1.8', color: 'var(--text-primary)', whiteSpace: 'pre-wrap', fontSize: '1.2rem', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '12px' }}>
+                {instructionText || "No detailed instructions available. Try following the cooking processes listed on the right."}
               </p>
             )}
           </section>
         </div>
+
 
         {/* Right Column: High Intelligence Metrics */}
         <div>
