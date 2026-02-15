@@ -234,9 +234,6 @@ export default function App() {
       {/* ── UPLOAD ── */}
       <ImageUpload onFoodDetected={handleFoodDetected} isLoading={loading} />
 
-      {/* ── GOAL ── */}
-      <GoalSelector selectedGoal={goal} onGoalChange={handleGoalChange} />
-
       {/* ── ANALYZE ── */}
       {detectedFood && (
         <button className="analyze-btn" onClick={handleAnalyze} disabled={loading} id="analyze-button">
@@ -296,4 +293,4 @@ export default function App() {
       )}
     </div>
   );
-}
+} 
